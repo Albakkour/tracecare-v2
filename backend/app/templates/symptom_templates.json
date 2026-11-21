@@ -1,0 +1,196 @@
+{
+  "registry_version": "2026-11-21-demo",
+  "notice": "Demo templates for testing software mechanics only. Illustrative documentation dimensions; not clinical guidelines, not exhaustive, not mandatory, and not a standard of care. Must be reviewed by a qualified clinical advisor before any real-world use.",
+  "templates": [
+    {
+      "template_id": "headache_demo_v1",
+      "version": "1.0-demo",
+      "display_name": "Headache — consultation documentation demo",
+      "description": "Illustrative documentation dimensions for a patient-reported headache.",
+      "category": "headache",
+      "trigger_concepts": [
+        "headache",
+        "headaches",
+        "migraine",
+        "head pain"
+      ],
+      "status": "demo_not_clinically_validated",
+      "review_required": true,
+      "source": "TraceCare hackathon demo (Section 13 of the project blueprint)",
+      "clinical_reviewer": null,
+      "approval_status": "not_approved",
+      "disclaimer": "Demo template, not a clinical guideline. Items are illustrative and not mandatory questions.",
+      "items": [
+        {
+          "item_id": "onset",
+          "label": "Onset",
+          "description": "When the headache started or first appeared.",
+          "example_questions": [
+            "When did it start?",
+            "When did you first notice it?"
+          ]
+        },
+        {
+          "item_id": "duration_course",
+          "label": "Duration / course",
+          "description": "How long it has lasted and whether it has changed.",
+          "example_questions": [
+            "How long has it been going on?",
+            "Has it changed over time?"
+          ]
+        },
+        {
+          "item_id": "location",
+          "label": "Location",
+          "description": "Where the headache is felt.",
+          "example_questions": [
+            "Where do you feel it?"
+          ]
+        },
+        {
+          "item_id": "description",
+          "label": "Description",
+          "description": "How the patient describes the feeling.",
+          "example_questions": [
+            "How would you describe the feeling?"
+          ]
+        },
+        {
+          "item_id": "severity_impact",
+          "label": "Severity / impact",
+          "description": "How severe it is or how it affects daily life.",
+          "example_questions": [
+            "How severe is it?",
+            "How does it affect your day?"
+          ]
+        },
+        {
+          "item_id": "frequency_pattern",
+          "label": "Frequency / pattern",
+          "description": "How often it happens or any timing pattern.",
+          "example_questions": [
+            "How often does it happen?"
+          ]
+        },
+        {
+          "item_id": "triggers_relief",
+          "label": "Triggers / relieving factors",
+          "description": "What makes it better or worse.",
+          "example_questions": [
+            "Have you noticed what makes it better or worse?"
+          ]
+        },
+        {
+          "item_id": "other_symptoms",
+          "label": "Other symptoms mentioned",
+          "description": "Any other symptoms discussed alongside the headache.",
+          "example_questions": [
+            "Have you noticed anything else?"
+          ]
+        }
+      ]
+    },
+    {
+      "template_id": "msk_pain_demo_v1",
+      "version": "1.1-demo",
+      "display_name": "Musculoskeletal pain (back / joint) — consultation documentation demo",
+      "description": "Illustrative documentation dimensions for patient-reported back or joint pain.",
+      "category": "musculoskeletal_pain",
+      "trigger_concepts": [
+        "back pain",
+        "knee pain",
+        "joint pain",
+        "shoulder pain",
+        "hip pain",
+        "neck pain",
+        "ankle pain",
+        "wrist pain",
+        "elbow pain"
+      ],
+      "status": "demo_not_clinically_validated",
+      "review_required": true,
+      "source": "TraceCare hackathon demo",
+      "clinical_reviewer": null,
+      "approval_status": "not_approved",
+      "disclaimer": "Demo template, not a clinical guideline. Items are illustrative and not mandatory questions.",
+      "items": [
+        {
+          "item_id": "onset",
+          "label": "Onset (when it started)",
+          "description": "When the pain started or how long it has been present. A question about injuries alone is not an onset question.",
+          "example_questions": [
+            "When did it start?",
+            "How long have you had this pain?"
+          ]
+        },
+        {
+          "item_id": "injury_mechanism",
+          "label": "Injury / what started it",
+          "description": "Any injury, accident, or activity that started the pain (including an explicit denial of injury).",
+          "example_questions": [
+            "Did you injure it?",
+            "What were you doing when it started?"
+          ]
+        },
+        {
+          "item_id": "location",
+          "label": "Location",
+          "description": "Where the pain is felt.",
+          "example_questions": [
+            "Where exactly is the pain?"
+          ]
+        },
+        {
+          "item_id": "description",
+          "label": "Description",
+          "description": "How the patient describes the pain.",
+          "example_questions": [
+            "What does the pain feel like?"
+          ]
+        },
+        {
+          "item_id": "severity_impact",
+          "label": "Severity / impact",
+          "description": "How severe it is or how it affects activities.",
+          "example_questions": [
+            "How bad is the pain?",
+            "Does it stop you doing anything?"
+          ]
+        },
+        {
+          "item_id": "aggravating_relieving",
+          "label": "Aggravating / relieving factors",
+          "description": "What makes it better or worse.",
+          "example_questions": [
+            "Does anything make it better or worse?"
+          ]
+        },
+        {
+          "item_id": "previous_episodes",
+          "label": "Previous episodes",
+          "description": "Whether similar pain or problems happened before (history of similar episodes).",
+          "example_questions": [
+            "Have you had this before?"
+          ]
+        },
+        {
+          "item_id": "treatment_tried",
+          "label": "Treatment tried so far",
+          "description": "Anything the patient has already tried for this pain, including medication taken (e.g. a question about current medication answered with a painkiller), ice, rest or heat.",
+          "example_questions": [
+            "Have you tried anything for it?",
+            "Are you taking any medication for it?"
+          ]
+        },
+        {
+          "item_id": "other_symptoms",
+          "label": "Other symptoms mentioned",
+          "description": "Any other symptoms discussed alongside the pain.",
+          "example_questions": [
+            "Any other symptoms?"
+          ]
+        }
+      ]
+    }
+  ]
+}

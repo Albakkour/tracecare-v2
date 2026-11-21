@@ -1,0 +1,29 @@
+{
+  "citation": "Attal K, Ondov B, Demner-Fushman D. A dataset for plain language adaptation of biomedical abstracts. Scientific Data, 2023. https://osf.io/rnpmf/",
+  "pairs": [
+    {
+      "question_id": "1",
+      "pmid": "15902691",
+      "source": "Muscle cramps are a common problem characterized by a sudden, painful, involuntary contraction of muscle.",
+      "plain": "Muscle cramps are a common problem represented by sudden, painful, involuntary muscle contractions."
+    },
+    {
+      "question_id": "2",
+      "pmid": "15316838",
+      "source": "Urinary incontinence is the inability to willingly control bladder voiding.",
+      "plain": "Urinary incontinence is the inability to control your bladder."
+    },
+    {
+      "question_id": "3",
+      "pmid": "16445274",
+      "source": "Acute episodes of hyperkalemia commonly are triggered by the introduction of a medication affecting potassium homeostasis; illness or dehydration also can be triggers.",
+      "plain": "Hyperkalemia that comes on rapidly is usually caused by an illness, dehydration, or by starting medicines that affect normal potassium balance in the body."
+    },
+    {
+      "question_id": "4",
+      "pmid": "9803200",
+      "source": "These changes provide an easier and more reliable means of diagnosing persons at risk of complications from hyperglycemia.",
+      "plain": "These changes help improve identification of those at risk from effects of high blood sugar."
+    }
+  ]
+}
