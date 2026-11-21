@@ -1,7 +1,8 @@
 from app.llm.schemas import ChecklistCandidate, FactCandidate, PatientExplanationOutput, PatientStatementCandidate
 from app.services.checklist_service import load_registry
 from app.services.evidence_validator import locate_quote, validate_checklist, validate_facts
-from app.services.patient_explainer import meaning_checks, validate_patient_statements
+from app.services.meaning import fact_meaning_checks as meaning_checks
+from app.services.patient_explainer import validate_patient_statements
 
 
 def fact(**kw) -> FactCandidate:

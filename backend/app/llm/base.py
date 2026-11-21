@@ -30,3 +30,7 @@ class LLMProvider(Protocol):
     def explain_for_patient(self, facts: list[MedicalFact], language: str) -> PatientExplanationOutput:
         """Rewrite accepted facts into plain language, keeping fact IDs."""
         ...
+
+    def simplify_record(self, sentences, language: str):
+        """Rewrite record sentences into plain language, citing sentence IDs."""
+        ...

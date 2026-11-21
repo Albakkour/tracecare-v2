@@ -24,13 +24,34 @@ function HighlightedSegment({ segment, refs }: { segment: TranscriptSegment; ref
   );
 }
 
-function SegmentCard({ segment, refs, dim }: { segment: TranscriptSegment; refs: EvidenceReference[]; dim?: boolean }) {
+function SegmentCard({
+  segment,
+  refs,
+  dim,
+  total,
+  onJump,
+}: {
+  segment: TranscriptSegment;
+  refs: EvidenceReference[];
+  dim?: boolean;
+  total?: number;
+  onJump?: (segmentId: string) => void;
+}) {
   return (
     <div className={`segment-card${dim ? " segment-dim" : ""}`}>
       <div className="segment-head">
         <span className="seg-id">{segment.segment_id}</span>
         <SpeakerChip speaker={segment.speaker} label={segment.speaker_label} />
-        {dim && <span className="small muted">context</span>}
+        {dim ? (
+          <span className="small muted">context</span>
+        ) : (
+          total && <span className="small muted">turn {segment.turn_index} of {total}</span>
+        )}
+        {!dim && onJump && (
+          <button type="button" className="link small push-right" onClick={() => onJump(segment.segment_id)}>
+            Show in transcript
+          </button>
+        )}
       </div>
       <p className="segment-text">
         <HighlightedSegment segment={segment} refs={refs} />
@@ -38,6 +59,8 @@ function SegmentCard({ segment, refs, dim }: { segment: TranscriptSegment; refs:
     </div>
   );
 }
+
+let jumpHandler: ((segmentId: string) => void) | undefined;
 
 function SegmentsWithContext({
   result,
@@ -68,7 +91,7 @@ function SegmentsWithContext({
     }
     if (!shown.has(sid)) {
       shown.add(sid);
-      cards.push(<SegmentCard key={sid} segment={result.segments[i]} refs={refs} />);
+      cards.push(<SegmentCard key={sid} segment={result.segments[i]} refs={refs} total={result.segments.length} onJump={jumpHandler} />);
     }
   }
   return <>{cards}</>;
@@ -233,19 +256,66 @@ function ReviewForm({
   );
 }
 
+function StatementPanel({ result, statementId, onClose }: { result: AnalyzeResponse; statementId: string; onClose: () => void }) {
+  const st = result.patient_explanation.statements.find((s) => s.statement_id === statementId);
+  if (!st) {
+    return (
+      <aside className="side-panel">
+        <PanelHead title="Sentence" onClose={onClose} />
+        <p className="error-text">This sentence could not be found.</p>
+      </aside>
+    );
+  }
+  const facts = result.facts.filter((f) => st.fact_ids.includes(f.fact_id));
+  return (
+    <aside className="side-panel">
+      <PanelHead title="Compare with the source" onClose={onClose} />
+      <div className="compare-block">
+        <span className="compare-label">Plain-language sentence</span>
+        <p className="compare-text">{st.text}</p>
+      </div>
+      {st.meaning_checks.length > 0 && (
+        <ul className="review-notes">
+          {st.meaning_checks.map((m, i) => (
+            <li key={i}>{m.message}</li>
+          ))}
+        </ul>
+      )}
+      {facts.map((f) => (
+        <div key={f.fact_id} className="compare-block">
+          <span className="compare-label">
+            {f.fact_id} · {f.concept} · polarity <span className={`polarity polarity-${f.polarity}`}>{f.polarity}</span>
+          </span>
+          <p className="compare-text">{f.normalized_value}</p>
+          <SegmentsWithContext result={result} segmentIds={f.source_segment_ids} refs={f.evidence} />
+        </div>
+      ))}
+      <p className="small muted">
+        The checks are heuristics: a flag means “compare carefully”, not “wrong”. Correct the summary before sharing it.
+      </p>
+    </aside>
+  );
+}
+
 export function SidePanel({
   result,
   templates,
   selection,
   onClose,
   onUpdateItem,
+  onJump,
 }: {
   result: AnalyzeResponse;
   templates: ChecklistTemplate[];
   selection: PanelSelection | null;
   onClose: () => void;
   onUpdateItem: (templateId: string, itemId: string, update: CoverageItemUpdate) => Promise<void>;
+  onJump?: (segmentId: string) => void;
 }) {
+  jumpHandler = onJump;
+  if (selection?.kind === "statement") {
+    return <StatementPanel result={result} statementId={selection.statementId} onClose={onClose} />;
+  }
   if (!selection) {
     return (
       <aside className="side-panel side-panel-empty">

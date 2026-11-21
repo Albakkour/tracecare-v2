@@ -15,7 +15,7 @@ from pydantic import BaseModel, ValidationError
 from app.core.config import Settings
 from app.llm import prompts
 from app.llm.base import ProviderError
-from app.llm.schemas import ExtractionOutput, PatientExplanationOutput
+from app.llm.schemas import ExtractionOutput, PatientExplanationOutput, RecordSimplificationOutput
 from app.schemas.coverage import ChecklistTemplate
 from app.schemas.facts import MedicalFact
 from app.schemas.transcript import TranscriptSegment
@@ -106,3 +106,7 @@ class AnthropicProvider:
     def explain_for_patient(self, facts: list[MedicalFact], language: str) -> PatientExplanationOutput:
         return self._call(prompts.PATIENT_SYSTEM, prompts.patient_user_message(facts, language),
                           PatientExplanationOutput, "patient_explanation")
+
+    def simplify_record(self, sentences, language: str) -> RecordSimplificationOutput:
+        return self._call(prompts.RECORD_SYSTEM, prompts.record_user_message(sentences, language),
+                          RecordSimplificationOutput, "record_explainer")

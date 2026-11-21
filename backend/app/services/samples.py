@@ -20,6 +20,28 @@ def load_samples() -> list[dict]:
     return json.loads(SAMPLES_PATH.read_text(encoding="utf-8"))["samples"]
 
 
+EVALUATION_DIR = Path(__file__).resolve().parent.parent / "evaluation"
+
+
+@lru_cache
+def _data() -> dict:
+    if not SAMPLES_PATH.exists():
+        return {}
+    return json.loads(SAMPLES_PATH.read_text(encoding="utf-8"))
+
+
+def list_records() -> list[dict]:
+    return _data().get("records", [])
+
+
+def evaluation_results() -> dict:
+    out = {}
+    for name in ("aci", "plaba"):
+        path = EVALUATION_DIR / f"{name}.json"
+        out[name] = json.loads(path.read_text(encoding="utf-8")) if path.exists() else None
+    return out
+
+
 def list_samples() -> list[dict]:
     return [{k: v for k, v in s.items() if k not in {"transcript", "reference_note"}} for s in load_samples()]
 

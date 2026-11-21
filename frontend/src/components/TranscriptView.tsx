@@ -1,18 +1,25 @@
+import { useEffect, useRef } from "react";
 import type { AnalyzeResponse } from "../types/api";
-import { SpeakerChip, type EvidenceSelection } from "./common";
+import { SpeakerChip, type PanelSelection } from "./common";
 
 export function TranscriptView({
   result,
+  focusSegmentId,
   onSelect,
 }: {
   result: AnalyzeResponse;
-  onSelect: (sel: EvidenceSelection) => void;
+  focusSegmentId: string | null;
+  onSelect: (sel: PanelSelection) => void;
 }) {
+  const focusRef = useRef<HTMLLIElement | null>(null);
+  useEffect(() => {
+    focusRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+  }, [focusSegmentId]);
+
   const citing = new Map<string, string[]>();
   for (const f of result.facts) {
     for (const sid of f.source_segment_ids) citing.set(sid, [...(citing.get(sid) ?? []), f.fact_id]);
   }
-  const findings = result.validation_findings;
   return (
     <section>
       {result.parse_warnings.length > 0 && (
@@ -22,35 +29,36 @@ export function TranscriptView({
           ))}
         </div>
       )}
-      <h3>Validation findings ({findings.length})</h3>
-      {findings.length === 0 ? (
-        <p className="muted">No validation issues were recorded.</p>
-      ) : (
-        <ul className="findings">
-          {findings.map((f, i) => (
-            <li key={i} className={`finding finding-${f.severity}`}>
-              <span className="tag">{f.severity}</span> <code>{f.code}</code>
-              {f.ref_id && <span className="muted"> · {f.ref_id}</span>} — {f.message}
-            </li>
-          ))}
-        </ul>
-      )}
-      <h3>Segmented transcript ({result.segments.length} segments)</h3>
+      <div className="doc-toolbar">
+        <div>
+          <h2>Transcript</h2>
+          <p className="small muted">
+            {result.segments.length} turns. Badges show which facts were taken from each turn.
+          </p>
+        </div>
+      </div>
       <ol className="transcript">
-        {result.segments.map((s) => (
-          <li key={s.segment_id} className={`turn turn-${s.speaker}`}>
-            <div className="segment-head">
-              <span className="seg-id">{s.segment_id}</span>
-              <SpeakerChip speaker={s.speaker} label={s.speaker_label} />
-              {(citing.get(s.segment_id) ?? []).map((id) => (
-                <button key={id} type="button" className="fact-badge" onClick={() => onSelect({ kind: "fact", factId: id })}>
-                  [{id}]
-                </button>
-              ))}
-            </div>
-            <p>{s.text}</p>
-          </li>
-        ))}
+        {result.segments.map((s) => {
+          const focused = s.segment_id === focusSegmentId;
+          return (
+            <li
+              key={`${s.segment_id}-${focused ? focusSegmentId : ""}`}
+              ref={focused ? focusRef : undefined}
+              className={`turn turn-${s.speaker}${focused ? " turn-focus" : ""}`}
+            >
+              <div className="segment-head">
+                <span className="seg-id">{s.segment_id}</span>
+                <SpeakerChip speaker={s.speaker} label={s.speaker_label} />
+                {(citing.get(s.segment_id) ?? []).map((id) => (
+                  <button key={id} type="button" className="fact-badge" onClick={() => onSelect({ kind: "fact", factId: id })}>
+                    {id}
+                  </button>
+                ))}
+              </div>
+              <p>{s.text}</p>
+            </li>
+          );
+        })}
       </ol>
     </section>
   );

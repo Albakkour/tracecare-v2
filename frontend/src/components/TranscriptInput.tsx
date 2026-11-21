@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { api } from "../services/api";
-import type { ChecklistTemplate, ProviderName, PublicConfig, Sample, SampleSummary } from "../types/api";
+import type { ChecklistTemplate, Language, ProviderName, PublicConfig, Sample, SampleSummary } from "../types/api";
 import { IconFile, IconRefresh, IconShield, IconUser } from "./icons";
 
 export interface AnalyzeOptions {
   transcript: string;
   templateIds: string[];
   provider: ProviderName | undefined;
+  language: Language;
   patientName: string;
   tempPersonnummer: string;
 }
@@ -57,6 +58,7 @@ export function TranscriptInput({
   const [sampleId, setSampleId] = useState("");
   const [templateChoice, setTemplateChoice] = useState<string>("all");
   const [provider, setProvider] = useState<ProviderName | "">("");
+  const [language, setLanguage] = useState<Language>("en");
   const [patientName, setPatientName] = useState("");
   const [pnr, setPnr] = useState("");
   const maxChars = config?.max_transcript_chars ?? 30000;
@@ -82,12 +84,9 @@ export function TranscriptInput({
 
   return (
     <div className="input-page">
-      <div className="intro">
-        <h1>Analyse a consultation</h1>
-        <p className="muted">
-          Turn a doctor–patient transcript into an evidence-linked draft note, a patient-friendly explanation, and a
-          transparent coverage report.
-        </p>
+      <div className="page-head">
+        <h1>New consultation</h1>
+        <p className="muted">Draft note, patient summary and coverage report — every statement linked to the transcript.</p>
         <p className="callout callout-warn">
           <IconShield size={18} />
           <span>
@@ -165,7 +164,6 @@ export function TranscriptInput({
               disabled={!effectiveSampleId || loading}
               onClick={async () => {
                 const s = await onLoadSample(effectiveSampleId);
-                if (s?.suggested_template_id) setTemplateChoice(s.suggested_template_id);
                 if (s?.patient_name) setPatientName(s.patient_name);
               }}
             >
@@ -208,9 +206,10 @@ export function TranscriptInput({
             <span className="field-help">Demo templates: illustrative, not clinically validated.</span>
           </label>
           <label className="field">
-            <span className="field-label">Language</span>
-            <select value="en" disabled>
+            <span className="field-label">Patient summary language</span>
+            <select value={language} onChange={(e) => setLanguage(e.target.value as Language)}>
               <option value="en">English</option>
+              <option value="sv">Svenska (needs Claude)</option>
             </select>
           </label>
           <label className="field">
@@ -240,6 +239,7 @@ export function TranscriptInput({
               transcript,
               templateIds: templateChoice === "all" ? [] : [templateChoice],
               provider: provider || undefined,
+              language,
               patientName,
               tempPersonnummer: pnr,
             })

@@ -20,6 +20,7 @@ ITEM_STATUSES: tuple[str, ...] = ItemStatus.__args__  # type: ignore[attr-define
 class ChecklistItem(BaseModel):
     item_id: str = Field(pattern=r"^[a-z0-9_]+$")
     label: str = Field(min_length=1)
+    dimension: str | None = Field(default=None, description="Shared documentation dimension, e.g. onset")
     description: str | None = None
     example_questions: list[str] = Field(default_factory=list)
     reviewer_confirmation_recommended: bool = True

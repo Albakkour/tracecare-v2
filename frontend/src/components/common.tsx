@@ -3,7 +3,8 @@ import type { EvidenceReference, ItemStatus, MedicalFact, Speaker } from "../typ
 export type PanelSelection =
   | { kind: "fact"; factId: string }
   | { kind: "evidence"; title: string; refs: EvidenceReference[]; note?: string }
-  | { kind: "review"; templateId: string; itemId: string };
+  | { kind: "review"; templateId: string; itemId: string }
+  | { kind: "statement"; statementId: string };
 
 /** Backwards-compatible alias used by the views. */
 export type EvidenceSelection = PanelSelection;
@@ -143,4 +144,21 @@ export function initials(name: string | null): string {
     .slice(0, 2)
     .map((p) => p[0]!.toUpperCase())
     .join("");
+}
+
+export async function copyText(text: string): Promise<boolean> {
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch {
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    ta.style.position = "fixed";
+    ta.style.opacity = "0";
+    document.body.appendChild(ta);
+    ta.select();
+    const ok = document.execCommand("copy");
+    document.body.removeChild(ta);
+    return ok;
+  }
 }

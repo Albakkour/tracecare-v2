@@ -1,0 +1,94 @@
+{
+  "dataset": "ACI-Bench",
+  "citation": "Yim W, et al. ACI-BENCH: a Novel Ambient Clinical Intelligence Dataset for Benchmarking Automatic Visit Note Generation. Scientific Data, 2023. https://github.com/wyim/aci-bench",
+  "generated": "2026-11-21",
+  "provider": "Demo provider (rule-based, deterministic \u2014 not AI)",
+  "human_transcripts": {
+    "encounters": 207,
+    "facts_proposed": 1624,
+    "facts_per_encounter": 7.8,
+    "clinician_statements_per_encounter": 4.7,
+    "fact_status_pct": {
+      "source_linked": 99.4,
+      "rejected": 0.0,
+      "needs_review": 0.6
+    },
+    "statements_generated": 3422,
+    "statements_resolving_pct": 100.0,
+    "patient_sentences_flagged_meaning": 33,
+    "encounters_with_coverage_pct": 71.0,
+    "templates_used": {
+      "msk_pain_demo_v1": 65,
+      "shortness_of_breath_demo_v1": 15,
+      "headache_demo_v1": 15,
+      "general_symptom_demo_v1": 14,
+      "anxiety_low_mood_demo_v1": 13,
+      "nausea_vomiting_demo_v1": 13,
+      "dizziness_demo_v1": 11,
+      "cough_demo_v1": 10,
+      "chest_pain_demo_v1": 7,
+      "constipation_demo_v1": 6,
+      "abdominal_pain_demo_v1": 4,
+      "rash_demo_v1": 4,
+      "fever_demo_v1": 4,
+      "fatigue_demo_v1": 3,
+      "diarrhoea_demo_v1": 2,
+      "insomnia_demo_v1": 2,
+      "sore_throat_demo_v1": 1,
+      "palpitations_demo_v1": 1
+    },
+    "median_question_coverage_pct": 37.5,
+    "median_information_capture_pct": 55.6,
+    "unexplored_symptoms_per_encounter": 0.19,
+    "symptoms_also_in_reference_note_pct": 82.6,
+    "validation_findings": {
+      "checklist_needs_review": 61,
+      "unexplored_symptom": 39,
+      "possible_meaning_change": 33,
+      "fact_needs_review": 10,
+      "speaker_mismatch": 3
+    }
+  },
+  "asr_transcripts": {
+    "encounters": 77,
+    "facts_proposed": 577,
+    "facts_per_encounter": 7.5,
+    "clinician_statements_per_encounter": 4.0,
+    "fact_status_pct": {
+      "source_linked": 100.0,
+      "rejected": 0.0
+    },
+    "statements_generated": 1230,
+    "statements_resolving_pct": 100.0,
+    "patient_sentences_flagged_meaning": 20,
+    "encounters_with_coverage_pct": 77.9,
+    "templates_used": {
+      "msk_pain_demo_v1": 31,
+      "cough_demo_v1": 7,
+      "shortness_of_breath_demo_v1": 7,
+      "headache_demo_v1": 6,
+      "general_symptom_demo_v1": 5,
+      "chest_pain_demo_v1": 4,
+      "nausea_vomiting_demo_v1": 4,
+      "dizziness_demo_v1": 3,
+      "fever_demo_v1": 2,
+      "abdominal_pain_demo_v1": 2,
+      "sore_throat_demo_v1": 1,
+      "anxiety_low_mood_demo_v1": 1
+    },
+    "median_question_coverage_pct": 43.6,
+    "median_information_capture_pct": 64.6,
+    "unexplored_symptoms_per_encounter": 0.21,
+    "symptoms_also_in_reference_note_pct": 85.2,
+    "validation_findings": {
+      "checklist_needs_review": 28,
+      "possible_meaning_change": 20,
+      "unexplored_symptom": 16
+    }
+  },
+  "notes": [
+    "Reference-note agreement is a proxy: share of extracted patient symptoms whose name also appears in the dataset's human-written note.",
+    "ASR transcripts contain recognition errors; the comparison shows how traceability holds up.",
+    "Engineering metrics on role-played data; not a measure of clinical accuracy."
+  ]
+}

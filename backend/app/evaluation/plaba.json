@@ -1,0 +1,79 @@
+{
+  "dataset": "PLABA",
+  "citation": "Attal K, Ondov B, Demner-Fushman D. A dataset for plain language adaptation of biomedical abstracts. Scientific Data, 2023. https://osf.io/rnpmf/",
+  "generated": "2026-11-21",
+  "sentence_pairs": 9085,
+  "human_adaptations": {
+    "flag_rate_any": 21.9,
+    "flag_rate_by_check": {
+      "negation": 5.0,
+      "number": 17.0,
+      "uncertainty": 1.2
+    },
+    "interpretation": "Share of human plain-language sentences the checks send for review (upper bound on false alarms)."
+  },
+  "corruption_detection": {
+    "negation_removed": {
+      "trials": 677,
+      "detected_pct": 100.0
+    },
+    "number_changed": {
+      "trials": 1627,
+      "detected_pct": 92.2
+    },
+    "hedge_removed": {
+      "trials": 528,
+      "detected_pct": 86.9
+    }
+  },
+  "examples_flagged_human": [
+    {
+      "pmid": "21366359",
+      "original": "While duloxetine is generally well tolerated, it is important to be knowledgeable about the potential for pharmacokinetic interactions between duloxetine and drugs that inhibit CYP1A2 or drugs that are metabolized by CYP2D6 enzymes.",
+      "plain": "It is important that your doctors know what drugs you are taking in order to make sure you do not get sick from taking duloxetine.",
+      "flags": [
+        "The plain version adds a negation that is not in the original."
+      ]
+    },
+    {
+      "pmid": "31071734",
+      "original": "Patients in the vitamin D and placebo groups received 50 000 IU vitamin D and placebo pearls, weekly for 3 months, respectively.",
+      "plain": "We gave one group 50,000 international units of vitamin D and the other group sugar pills for 3 months.",
+      "flags": [
+        "Number(s) from the original are missing or changed: 0, 50"
+      ]
+    },
+    {
+      "pmid": "25296661",
+      "original": "Most patients with sore throat seek symptom relief rather than antibiotics, therefore, therapies that relieve symptoms should be recommended to patients.",
+      "plain": "Doctors should suggest treatments that improve symptoms to people with sore throat because most do not want antibiotics.",
+      "flags": [
+        "The plain version adds a negation that is not in the original."
+      ]
+    },
+    {
+      "pmid": "25296661",
+      "original": "Multiple doses of flurbiprofen lozenges over 24 h also led to symptom relief, although not statistically significant in the Strep A/C group.",
+      "plain": "People with Strep A or C may have some symptom relief with more than one flurbiprofen lozenge over 24 h.",
+      "flags": [
+        "The original contains a negation that the plain version lacks."
+      ]
+    },
+    {
+      "pmid": "26048677",
+      "original": "Thus, BiPAP and medical treatments were ended.",
+      "plain": "Because they did not recur, the BiPAP and medical treatments were ended.",
+      "flags": [
+        "The plain version adds a negation that is not in the original."
+      ]
+    },
+    {
+      "pmid": "27068441",
+      "original": "We tested the hypothesis that disrupting both kinases causes severe polyuria and salt-wasting by generating SPAK/OSR1 double knockout (DKO) mice.",
+      "plain": "Researchers tested the idea that disrupting both enzymes causes severe polyuria (passing unusually large amounts of urine) and salt-wasting by producing SPAK/OSR1 double knockout (DKO) mice - mice without SPAK or OSR1.",
+      "flags": [
+        "The plain version adds a negation that is not in the original."
+      ]
+    }
+  ]
+}

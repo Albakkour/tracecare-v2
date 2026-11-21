@@ -3,7 +3,11 @@ import type {
   AnalyzeResponse,
   ChecklistTemplate,
   CoverageItemUpdate,
+  EvaluationResults,
+  Language,
   PublicConfig,
+  RecordExplainResponse,
+  RecordSample,
   Sample,
   SampleSummary,
 } from "../types/api";
@@ -59,6 +63,13 @@ export const api = {
   config: () => request<PublicConfig>("/api/config"),
   templates: () => request<{ notice: string; templates: ChecklistTemplate[] }>("/api/templates"),
   samples: () => request<{ samples: SampleSummary[] }>("/api/samples"),
+  recordSamples: () => request<{ records: RecordSample[] }>("/api/record-samples"),
+  explainRecord: (text: string, language: Language, provider?: string) =>
+    request<RecordExplainResponse>("/api/explain-record", {
+      method: "POST",
+      body: JSON.stringify({ text, language, provider }),
+    }),
+  evaluation: () => request<EvaluationResults>("/api/evaluation"),
   tempPatientId: () => request<{ temp_personnummer: string }>("/api/patients/temp-id"),
   sample: (id: string) => request<Sample>(`/api/samples/${encodeURIComponent(id)}`),
   analyze: (body: AnalyzeRequest) =>

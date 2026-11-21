@@ -67,12 +67,15 @@ export interface SymptomMention {
   template_id: string | null;
   evidence_status: EvidenceStatus;
   evidence: EvidenceReference[];
+  followed_up: boolean | null;
+  follow_up_evidence: EvidenceReference[];
   review_notes: string[];
 }
 
 export interface ChecklistItem {
   item_id: string;
   label: string;
+  dimension: string | null;
   description: string | null;
   example_questions: string[];
 }
@@ -176,6 +179,8 @@ export interface PatientExplanation {
   intro: string;
   statements: GeneratedStatement[];
   not_established: string[];
+  section_headings: Record<string, string>;
+  plain_text: string;
 }
 
 export interface ValidationFinding {
@@ -224,9 +229,11 @@ export interface AnalyzeResponse {
   persisted: boolean;
 }
 
+export type Language = "en" | "sv";
+
 export interface AnalyzeRequest {
   transcript: string;
-  language: "en";
+  language: Language;
   template_ids: string[];
   provider?: ProviderName;
   patient?: PatientInfo;
@@ -260,4 +267,80 @@ export interface SampleSummary {
 export interface Sample extends SampleSummary {
   transcript: string;
   reference_note?: string;
+}
+
+export interface RecordSentence {
+  sentence_id: string;
+  text: string;
+  start_char: number;
+  end_char: number;
+  heading: string | null;
+}
+
+export interface PlainStatement {
+  statement_id: string;
+  source_sentence_ids: string[];
+  text: string;
+  meaning_checks: MeaningCheck[];
+  risk: "low" | "medium" | "high";
+  terms_explained: string[];
+}
+
+export interface RecordExplainResponse {
+  created_at: string;
+  language: string;
+  provider: ProviderName;
+  provider_label: string;
+  model: string | null;
+  sentences: RecordSentence[];
+  statements: PlainStatement[];
+  unexplained_sentence_ids: string[];
+  warnings: string[];
+  plain_text: string;
+  disclaimer: string;
+}
+
+export interface RecordSample {
+  record_id: string;
+  title: string;
+  source: string;
+  text: string;
+  citation?: string;
+}
+
+export type EvalSet = Record<string, unknown> & {
+  encounters: number;
+  facts_per_encounter: number;
+  clinician_statements_per_encounter: number;
+  fact_status_pct: Record<string, number>;
+  statements_generated: number;
+  statements_resolving_pct: number;
+  encounters_with_coverage_pct: number;
+  templates_used: Record<string, number>;
+  median_question_coverage_pct: number | null;
+  median_information_capture_pct: number | null;
+  unexplored_symptoms_per_encounter: number;
+  symptoms_also_in_reference_note_pct: number | null;
+  patient_sentences_flagged_meaning: number;
+};
+
+export interface EvaluationResults {
+  aci: null | {
+    dataset: string;
+    citation: string;
+    generated: string;
+    provider: string;
+    human_transcripts: EvalSet;
+    asr_transcripts: EvalSet | null;
+    notes: string[];
+  };
+  plaba: null | {
+    dataset: string;
+    citation: string;
+    generated: string;
+    sentence_pairs: number;
+    human_adaptations: { flag_rate_any: number; flag_rate_by_check: Record<string, number>; interpretation: string };
+    corruption_detection: Record<string, { trials: number; detected_pct: number | null }>;
+    examples_flagged_human: { pmid: string; original: string; plain: string; flags: string[] }[];
+  };
 }

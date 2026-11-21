@@ -2,11 +2,16 @@
 
 **Every medical statement, connected to its source.**
 
-TraceCare is a prototype for evidence-grounded clinical documentation and patient communication. It turns a doctor–patient transcript into:
+TraceCare is a prototype for evidence-grounded clinical documentation and patient communication. It covers hackathon ideas 1 ("Show the receipts") and 5 ("Do you understand your own medical record?"):
 
-1. A structured **draft clinical note**, where every statement links to the transcript segment(s) it came from.
-2. A **patient-friendly explanation** of the same facts, shown side by side with the original words, with automatic flags where a simplification may have changed the meaning (lost negation, lost uncertainty, changed number).
-3. A **Consultation Coverage** report that keeps two numbers separate: clinician question coverage (what the clinician asked about) and information capture coverage (what information was captured, including information the patient volunteered). Both are measured against a versioned demo checklist.
+1. **Draft clinical note** from a doctor–patient transcript: what the patient reported, plus the clinician's examination findings, assessment, plan, prescriptions and follow-up, each documented as stated. Every sentence links to the exact transcript turn.
+2. **After-visit summary** for the patient in plain English or Swedish, sectioned (why you came, what you said, what the doctor found and thinks, treatment, follow-up) and copyable in one go. Sentences whose meaning may have changed are flagged.
+3. **Consultation coverage**: 20 symptom checklists plus a general fallback, with separate *clinician question* and *information capture* metrics, and detection of **symptoms nobody followed up**.
+4. **Record explainer**: paste a clinical note and get a side-by-side plain-language version, sentence by sentence, with risky simplifications highlighted and dropped content flagged.
+5. **Review list**: every item that needs a clinician's attention, in one place, each linking to where it applies.
+6. **Evaluation** on ACI-Bench (human vs speech-recognition transcripts) and PLABA (meaning-check calibration), shown in the app.
+
+See [docs/CHALLENGE_GAP_ANALYSIS.md](docs/CHALLENGE_GAP_ANALYSIS.md) for requirement-by-requirement coverage and remaining gaps.
 
 The product is not a diagnostic, triage, treatment, or clinician-performance assessment system. Coverage percentages describe only the transcript against a selected demo checklist. They are not measures of clinical quality or standard of care. All clinical documentation requires professional review.
 
@@ -100,17 +105,28 @@ cd backend
 .venv/bin/python -m pytest -q
 ```
 
-The 67 tests cover segmentation and stable IDs, exact and normalized quote validation, invalid segment IDs, speaker mismatch, duplicate fact IDs, negation and uncertain-dosage preservation, missing information never becoming a negative, every coverage formula rule (volunteered, asked but unanswered, not applicable, unclear/pending, not found, zero denominator), generated statements that cite unknown facts, a mocked LLM that fabricates a fact, prompt-injection text in a transcript, reviewer overrides with recalculation and persistence, the demo password gate, rate limiting, temporary-personnummer validation (real personnummer are rejected), patient-name detection, production-config checks, the reported regressions (missing items hidden as pending; review controls disappearing after a save), and the Claude provider against a mocked HTTP transport (request shape, API errors, timeouts, malformed output). Tests never call the live API.
+The 82 tests cover segmentation and stable IDs, exact and normalized quote validation, invalid segment IDs, speaker mismatch, duplicate fact IDs, negation and uncertain-dosage preservation, missing information never becoming a negative, every coverage formula rule (volunteered, asked but unanswered, not applicable, unclear/pending, not found, zero denominator), generated statements that cite unknown facts, a mocked LLM that fabricates a fact, prompt-injection text in a transcript, reviewer overrides with recalculation and persistence, the demo password gate, rate limiting, temporary-personnummer validation (real personnummer are rejected), patient-name detection, production-config checks, the reported regressions (missing items hidden as pending; review controls disappearing after a save), the 21-template registry, clinician statements, follow-up detection, English/Swedish meaning checks, the record explainer, and the Claude provider against a mocked HTTP transport (request shape, API errors, timeouts, malformed output). Tests never call the live API.
 
 Frontend type check and build: `cd frontend && npm run build`.
 
-## Datasets
+## Datasets — how they are used
 
-See [data/README.md](data/README.md).
+See also the in-app **Evaluation** page and [data/README.md](data/README.md).
 
-- **ACI-Bench** (role-played doctor–patient conversations with reference notes). Four encounters ship as samples, and the human-written reference note can be opened next to TraceCare's draft. One sample (D2N114) has swapped `[doctor]`/`[patient]` labels in the source data, which demonstrates speaker-mismatch detection. `scripts/evaluate_aci.py` runs the whole pipeline over all 207 encounters offline.
-- **PLABA** (sentence-aligned plain-language adaptations). A few pairs are used as plain-language style references in the Claude patient-explanation prompt. The "meaning may have changed" check follows PLABA's sentence-level alignment idea.
-- Two hand-written **synthetic** transcripts cover negation, uncertain dosage, an unanswered question, a patient-volunteered detail, an unlabelled line, a third-party speaker, and an embedded "ignore previous instructions" line.
+- **ACI-Bench** (role-played consultations):
+  - Four encounters are bundled as samples, with their human-written reference notes for comparison; the reference notes are also sample records for the record explainer.
+  - `scripts/evaluate_aci.py` runs the full pipeline on all 207 human transcripts and the ASR transcripts, measuring traceability, validation outcomes, checklist coverage, follow-up gaps and agreement with the reference notes.
+  - D2N114 (swapped speaker labels) demonstrates speaker-mismatch detection.
+- **PLABA** (sentence-aligned plain-language adaptations): `scripts/evaluate_plaba.py` calibrates the meaning-change checks on 9,000+ human sentence pairs (false-alarm rate) and on deliberately corrupted rewrites (detection rate). A few pairs are style examples in the Claude prompts. Not used for training, by design.
+- **Synthetic** transcripts (including your back-pain, knee-pain and stomach-pain cases) cover negation, uncertainty, unanswered questions, volunteered details, third-party speakers, embedded instructions, and an unexplored symptom.
+
+Re-run the evaluations after changing the pipeline:
+
+```bash
+cd backend
+.venv/bin/python -I ../scripts/evaluate_aci.py ../data/aci-bench-corpus        # writes app/evaluation/aci.json
+.venv/bin/python -I ../scripts/evaluate_plaba.py ../data/rnpmf-osfstorage-archive  # writes app/evaluation/plaba.json
+```
 
 ## Patient identity (synthetic)
 

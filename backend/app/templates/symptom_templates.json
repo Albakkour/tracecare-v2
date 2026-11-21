@@ -1,5 +1,5 @@
 {
-  "registry_version": "2026-11-21-demo",
+  "registry_version": "2026-11-21-demo-2",
   "notice": "Demo templates for testing software mechanics only. Illustrative documentation dimensions; not clinical guidelines, not exhaustive, not mandatory, and not a standard of care. Must be reviewed by a qualified clinical advisor before any real-world use.",
   "templates": [
     {
@@ -28,7 +28,8 @@
           "example_questions": [
             "When did it start?",
             "When did you first notice it?"
-          ]
+          ],
+          "dimension": "onset"
         },
         {
           "item_id": "duration_course",
@@ -37,7 +38,8 @@
           "example_questions": [
             "How long has it been going on?",
             "Has it changed over time?"
-          ]
+          ],
+          "dimension": "duration_course"
         },
         {
           "item_id": "location",
@@ -45,7 +47,8 @@
           "description": "Where the headache is felt.",
           "example_questions": [
             "Where do you feel it?"
-          ]
+          ],
+          "dimension": "location"
         },
         {
           "item_id": "description",
@@ -53,7 +56,8 @@
           "description": "How the patient describes the feeling.",
           "example_questions": [
             "How would you describe the feeling?"
-          ]
+          ],
+          "dimension": "character"
         },
         {
           "item_id": "severity_impact",
@@ -62,7 +66,8 @@
           "example_questions": [
             "How severe is it?",
             "How does it affect your day?"
-          ]
+          ],
+          "dimension": "severity_impact"
         },
         {
           "item_id": "frequency_pattern",
@@ -70,7 +75,8 @@
           "description": "How often it happens or any timing pattern.",
           "example_questions": [
             "How often does it happen?"
-          ]
+          ],
+          "dimension": "timing_frequency"
         },
         {
           "item_id": "triggers_relief",
@@ -78,7 +84,8 @@
           "description": "What makes it better or worse.",
           "example_questions": [
             "Have you noticed what makes it better or worse?"
-          ]
+          ],
+          "dimension": "modifying_factors"
         },
         {
           "item_id": "other_symptoms",
@@ -86,14 +93,15 @@
           "description": "Any other symptoms discussed alongside the headache.",
           "example_questions": [
             "Have you noticed anything else?"
-          ]
+          ],
+          "dimension": "associated_symptoms"
         }
       ]
     },
     {
       "template_id": "msk_pain_demo_v1",
       "version": "1.1-demo",
-      "display_name": "Musculoskeletal pain (back / joint) — consultation documentation demo",
+      "display_name": "Musculoskeletal pain (back / joint / limb) — consultation documentation demo",
       "description": "Illustrative documentation dimensions for patient-reported back or joint pain.",
       "category": "musculoskeletal_pain",
       "trigger_concepts": [
@@ -105,7 +113,12 @@
         "neck pain",
         "ankle pain",
         "wrist pain",
-        "elbow pain"
+        "elbow pain",
+        "foot pain",
+        "hand pain",
+        "leg pain",
+        "arm pain",
+        "muscle pain"
       ],
       "status": "demo_not_clinically_validated",
       "review_required": true,
@@ -121,7 +134,8 @@
           "example_questions": [
             "When did it start?",
             "How long have you had this pain?"
-          ]
+          ],
+          "dimension": "onset"
         },
         {
           "item_id": "injury_mechanism",
@@ -130,7 +144,8 @@
           "example_questions": [
             "Did you injure it?",
             "What were you doing when it started?"
-          ]
+          ],
+          "dimension": "injury_mechanism"
         },
         {
           "item_id": "location",
@@ -138,7 +153,8 @@
           "description": "Where the pain is felt.",
           "example_questions": [
             "Where exactly is the pain?"
-          ]
+          ],
+          "dimension": "location"
         },
         {
           "item_id": "description",
@@ -146,7 +162,8 @@
           "description": "How the patient describes the pain.",
           "example_questions": [
             "What does the pain feel like?"
-          ]
+          ],
+          "dimension": "character"
         },
         {
           "item_id": "severity_impact",
@@ -155,7 +172,8 @@
           "example_questions": [
             "How bad is the pain?",
             "Does it stop you doing anything?"
-          ]
+          ],
+          "dimension": "severity_impact"
         },
         {
           "item_id": "aggravating_relieving",
@@ -163,7 +181,8 @@
           "description": "What makes it better or worse.",
           "example_questions": [
             "Does anything make it better or worse?"
-          ]
+          ],
+          "dimension": "modifying_factors"
         },
         {
           "item_id": "previous_episodes",
@@ -171,7 +190,8 @@
           "description": "Whether similar pain or problems happened before (history of similar episodes).",
           "example_questions": [
             "Have you had this before?"
-          ]
+          ],
+          "dimension": "previous_episodes"
         },
         {
           "item_id": "treatment_tried",
@@ -180,7 +200,8 @@
           "example_questions": [
             "Have you tried anything for it?",
             "Are you taking any medication for it?"
-          ]
+          ],
+          "dimension": "treatment_tried"
         },
         {
           "item_id": "other_symptoms",
@@ -188,6 +209,1748 @@
           "description": "Any other symptoms discussed alongside the pain.",
           "example_questions": [
             "Any other symptoms?"
+          ],
+          "dimension": "associated_symptoms"
+        }
+      ]
+    },
+    {
+      "template_id": "abdominal_pain_demo_v1",
+      "version": "1.0-demo",
+      "display_name": "Abdominal pain — consultation documentation demo",
+      "description": "Illustrative documentation dimensions for patient-reported abdominal pain.",
+      "category": "abdominal_pain",
+      "trigger_concepts": [
+        "abdominal pain",
+        "stomach pain",
+        "stomach ache",
+        "tummy pain",
+        "belly pain",
+        "cramps"
+      ],
+      "status": "demo_not_clinically_validated",
+      "review_required": true,
+      "source": "TraceCare hackathon demo",
+      "clinical_reviewer": null,
+      "approval_status": "not_approved",
+      "disclaimer": "Demo template, not a clinical guideline. Items are illustrative and not mandatory questions.",
+      "items": [
+        {
+          "item_id": "onset",
+          "dimension": "onset",
+          "label": "Onset (when it started)",
+          "description": "When the symptom started or first appeared. A question only about injuries or previous episodes is not an onset question.",
+          "example_questions": [
+            "When did it start?",
+            "How long have you had it?"
+          ]
+        },
+        {
+          "item_id": "location",
+          "dimension": "location",
+          "label": "Location",
+          "description": "Where the symptom is felt or seen.",
+          "example_questions": [
+            "Where exactly do you feel it?"
+          ]
+        },
+        {
+          "item_id": "character",
+          "dimension": "character",
+          "label": "Description / character",
+          "description": "How the patient describes the symptom.",
+          "example_questions": [
+            "How would you describe it?"
+          ]
+        },
+        {
+          "item_id": "severity_impact",
+          "dimension": "severity_impact",
+          "label": "Severity / impact",
+          "description": "How severe it is, or how it affects daily life, work or sleep.",
+          "example_questions": [
+            "How bad is it?",
+            "How does it affect your day?"
+          ]
+        },
+        {
+          "item_id": "radiation",
+          "dimension": "radiation",
+          "label": "Spread / radiation",
+          "description": "Whether the symptom spreads or moves anywhere.",
+          "example_questions": [
+            "Does it spread anywhere?"
+          ]
+        },
+        {
+          "item_id": "timing_frequency",
+          "dimension": "timing_frequency",
+          "label": "Frequency / timing pattern",
+          "description": "How often it happens or any timing pattern (time of day, constant or intermittent).",
+          "example_questions": [
+            "How often does it happen?"
+          ]
+        },
+        {
+          "item_id": "modifying_factors",
+          "dimension": "modifying_factors",
+          "label": "Triggers / relieving factors",
+          "description": "What makes it better or worse, including food, eating or bowel movements.",
+          "example_questions": [
+            "Does anything make it better or worse?"
+          ]
+        },
+        {
+          "item_id": "associated_symptoms",
+          "dimension": "associated_symptoms",
+          "label": "Other symptoms mentioned",
+          "description": "Other symptoms discussed, e.g. nausea, vomiting, bowel or urinary changes (including denials).",
+          "example_questions": [
+            "Have you noticed anything else?"
+          ]
+        },
+        {
+          "item_id": "previous_episodes",
+          "dimension": "previous_episodes",
+          "label": "Previous episodes",
+          "description": "Whether something similar happened before.",
+          "example_questions": [
+            "Have you had this before?"
+          ]
+        },
+        {
+          "item_id": "treatment_tried",
+          "dimension": "treatment_tried",
+          "label": "Treatment tried so far",
+          "description": "Anything the patient has already tried for it, including medication taken, rest, ice or home remedies.",
+          "example_questions": [
+            "Have you tried anything for it?",
+            "Are you taking any medication for it?"
+          ]
+        }
+      ]
+    },
+    {
+      "template_id": "nausea_vomiting_demo_v1",
+      "version": "1.0-demo",
+      "display_name": "Nausea / vomiting — consultation documentation demo",
+      "description": "Illustrative documentation dimensions for patient-reported nausea / vomiting.",
+      "category": "nausea_vomiting",
+      "trigger_concepts": [
+        "vomiting",
+        "nausea",
+        "throwing up",
+        "feeling sick"
+      ],
+      "status": "demo_not_clinically_validated",
+      "review_required": true,
+      "source": "TraceCare hackathon demo",
+      "clinical_reviewer": null,
+      "approval_status": "not_approved",
+      "disclaimer": "Demo template, not a clinical guideline. Items are illustrative and not mandatory questions.",
+      "items": [
+        {
+          "item_id": "onset",
+          "dimension": "onset",
+          "label": "Onset (when it started)",
+          "description": "When the symptom started or first appeared. A question only about injuries or previous episodes is not an onset question.",
+          "example_questions": [
+            "When did it start?",
+            "How long have you had it?"
+          ]
+        },
+        {
+          "item_id": "timing_frequency",
+          "dimension": "timing_frequency",
+          "label": "How often",
+          "description": "How often the patient feels sick or vomits.",
+          "example_questions": [
+            "How often does it happen?"
+          ]
+        },
+        {
+          "item_id": "character",
+          "dimension": "character",
+          "label": "Description / character",
+          "description": "How the patient describes the nausea or vomiting.",
+          "example_questions": [
+            "How would you describe it?"
+          ]
+        },
+        {
+          "item_id": "intake_hydration",
+          "dimension": "intake_hydration",
+          "label": "Eating and drinking",
+          "description": "Appetite, eating, and ability to keep fluids down.",
+          "example_questions": [
+            "Are you able to eat and drink?",
+            "Can you keep fluids down?"
+          ]
+        },
+        {
+          "item_id": "associated_symptoms",
+          "dimension": "associated_symptoms",
+          "label": "Other symptoms mentioned",
+          "description": "Any other symptoms discussed alongside the main symptom (including explicit denials).",
+          "example_questions": [
+            "Have you noticed anything else?"
+          ]
+        },
+        {
+          "item_id": "exposure_contacts",
+          "dimension": "exposure_contacts",
+          "label": "Exposures / contacts",
+          "description": "Recent food, travel, or people around them with similar symptoms.",
+          "example_questions": [
+            "Has anyone around you been unwell?",
+            "Have you travelled recently?"
+          ]
+        },
+        {
+          "item_id": "modifying_factors",
+          "dimension": "modifying_factors",
+          "label": "Triggers / relieving factors",
+          "description": "What makes it better or worse.",
+          "example_questions": [
+            "Does anything make it better or worse?"
+          ]
+        },
+        {
+          "item_id": "treatment_tried",
+          "dimension": "treatment_tried",
+          "label": "Treatment tried so far",
+          "description": "Anything the patient has already tried for it, including medication taken, rest, ice or home remedies.",
+          "example_questions": [
+            "Have you tried anything for it?",
+            "Are you taking any medication for it?"
+          ]
+        }
+      ]
+    },
+    {
+      "template_id": "diarrhoea_demo_v1",
+      "version": "1.0-demo",
+      "display_name": "Diarrhoea — consultation documentation demo",
+      "description": "Illustrative documentation dimensions for patient-reported diarrhoea.",
+      "category": "diarrhoea",
+      "trigger_concepts": [
+        "diarrhoea",
+        "diarrhea",
+        "loose stools"
+      ],
+      "status": "demo_not_clinically_validated",
+      "review_required": true,
+      "source": "TraceCare hackathon demo",
+      "clinical_reviewer": null,
+      "approval_status": "not_approved",
+      "disclaimer": "Demo template, not a clinical guideline. Items are illustrative and not mandatory questions.",
+      "items": [
+        {
+          "item_id": "onset",
+          "dimension": "onset",
+          "label": "Onset (when it started)",
+          "description": "When the symptom started or first appeared. A question only about injuries or previous episodes is not an onset question.",
+          "example_questions": [
+            "When did it start?",
+            "How long have you had it?"
+          ]
+        },
+        {
+          "item_id": "timing_frequency",
+          "dimension": "timing_frequency",
+          "label": "How often",
+          "description": "How many times a day or how often it happens.",
+          "example_questions": [
+            "How often does it happen?"
+          ]
+        },
+        {
+          "item_id": "character",
+          "dimension": "character",
+          "label": "Description / character",
+          "description": "How the stool is described (consistency etc.).",
+          "example_questions": [
+            "How would you describe it?"
+          ]
+        },
+        {
+          "item_id": "intake_hydration",
+          "dimension": "intake_hydration",
+          "label": "Eating and drinking",
+          "description": "Appetite, eating, and ability to keep fluids down.",
+          "example_questions": [
+            "Are you able to eat and drink?",
+            "Can you keep fluids down?"
+          ]
+        },
+        {
+          "item_id": "associated_symptoms",
+          "dimension": "associated_symptoms",
+          "label": "Other symptoms mentioned",
+          "description": "Any other symptoms discussed alongside the main symptom (including explicit denials).",
+          "example_questions": [
+            "Have you noticed anything else?"
+          ]
+        },
+        {
+          "item_id": "exposure_contacts",
+          "dimension": "exposure_contacts",
+          "label": "Exposures / contacts",
+          "description": "Recent food, travel, or people around them with similar symptoms.",
+          "example_questions": [
+            "Has anyone around you been unwell?",
+            "Have you travelled recently?"
+          ]
+        },
+        {
+          "item_id": "previous_episodes",
+          "dimension": "previous_episodes",
+          "label": "Previous episodes",
+          "description": "Whether something similar happened before.",
+          "example_questions": [
+            "Have you had this before?"
+          ]
+        },
+        {
+          "item_id": "treatment_tried",
+          "dimension": "treatment_tried",
+          "label": "Treatment tried so far",
+          "description": "Anything the patient has already tried for it, including medication taken, rest, ice or home remedies.",
+          "example_questions": [
+            "Have you tried anything for it?",
+            "Are you taking any medication for it?"
+          ]
+        }
+      ]
+    },
+    {
+      "template_id": "constipation_demo_v1",
+      "version": "1.0-demo",
+      "display_name": "Constipation — consultation documentation demo",
+      "description": "Illustrative documentation dimensions for patient-reported constipation.",
+      "category": "constipation",
+      "trigger_concepts": [
+        "constipation",
+        "constipated"
+      ],
+      "status": "demo_not_clinically_validated",
+      "review_required": true,
+      "source": "TraceCare hackathon demo",
+      "clinical_reviewer": null,
+      "approval_status": "not_approved",
+      "disclaimer": "Demo template, not a clinical guideline. Items are illustrative and not mandatory questions.",
+      "items": [
+        {
+          "item_id": "onset",
+          "dimension": "onset",
+          "label": "Onset (when it started)",
+          "description": "When the symptom started or first appeared. A question only about injuries or previous episodes is not an onset question.",
+          "example_questions": [
+            "When did it start?",
+            "How long have you had it?"
+          ]
+        },
+        {
+          "item_id": "timing_frequency",
+          "dimension": "timing_frequency",
+          "label": "Bowel frequency",
+          "description": "How often bowel movements happen.",
+          "example_questions": [
+            "How often does it happen?"
+          ]
+        },
+        {
+          "item_id": "character",
+          "dimension": "character",
+          "label": "Description / character",
+          "description": "How the patient describes the symptom.",
+          "example_questions": [
+            "How would you describe it?"
+          ]
+        },
+        {
+          "item_id": "intake_hydration",
+          "dimension": "intake_hydration",
+          "label": "Diet and fluids",
+          "description": "Eating, fibre and fluid intake.",
+          "example_questions": [
+            "Are you able to eat and drink?",
+            "Can you keep fluids down?"
+          ]
+        },
+        {
+          "item_id": "associated_symptoms",
+          "dimension": "associated_symptoms",
+          "label": "Other symptoms mentioned",
+          "description": "Any other symptoms discussed alongside the main symptom (including explicit denials).",
+          "example_questions": [
+            "Have you noticed anything else?"
+          ]
+        },
+        {
+          "item_id": "previous_episodes",
+          "dimension": "previous_episodes",
+          "label": "Previous episodes",
+          "description": "Whether something similar happened before.",
+          "example_questions": [
+            "Have you had this before?"
+          ]
+        },
+        {
+          "item_id": "treatment_tried",
+          "dimension": "treatment_tried",
+          "label": "Treatment tried so far",
+          "description": "Anything the patient has already tried for it, including medication taken, rest, ice or home remedies.",
+          "example_questions": [
+            "Have you tried anything for it?",
+            "Are you taking any medication for it?"
+          ]
+        }
+      ]
+    },
+    {
+      "template_id": "chest_pain_demo_v1",
+      "version": "1.0-demo",
+      "display_name": "Chest pain — consultation documentation demo",
+      "description": "Illustrative documentation dimensions for patient-reported chest pain.",
+      "category": "chest_pain",
+      "trigger_concepts": [
+        "chest pain",
+        "chest tightness",
+        "chest discomfort"
+      ],
+      "status": "demo_not_clinically_validated",
+      "review_required": true,
+      "source": "TraceCare hackathon demo",
+      "clinical_reviewer": null,
+      "approval_status": "not_approved",
+      "disclaimer": "Demo template, not a clinical guideline. Items are illustrative and not mandatory questions.",
+      "items": [
+        {
+          "item_id": "onset",
+          "dimension": "onset",
+          "label": "Onset (when it started)",
+          "description": "When the symptom started or first appeared. A question only about injuries or previous episodes is not an onset question.",
+          "example_questions": [
+            "When did it start?",
+            "How long have you had it?"
+          ]
+        },
+        {
+          "item_id": "location",
+          "dimension": "location",
+          "label": "Location",
+          "description": "Where the symptom is felt or seen.",
+          "example_questions": [
+            "Where exactly do you feel it?"
+          ]
+        },
+        {
+          "item_id": "character",
+          "dimension": "character",
+          "label": "Description / character",
+          "description": "How the patient describes the symptom.",
+          "example_questions": [
+            "How would you describe it?"
+          ]
+        },
+        {
+          "item_id": "severity_impact",
+          "dimension": "severity_impact",
+          "label": "Severity / impact",
+          "description": "How severe it is, or how it affects daily life, work or sleep.",
+          "example_questions": [
+            "How bad is it?",
+            "How does it affect your day?"
+          ]
+        },
+        {
+          "item_id": "radiation",
+          "dimension": "radiation",
+          "label": "Spread / radiation",
+          "description": "Whether the symptom spreads or moves anywhere.",
+          "example_questions": [
+            "Does it spread anywhere?"
+          ]
+        },
+        {
+          "item_id": "modifying_factors",
+          "dimension": "modifying_factors",
+          "label": "Triggers / relieving factors",
+          "description": "What makes it better or worse, e.g. exertion, rest, breathing or position.",
+          "example_questions": [
+            "Does anything make it better or worse?"
+          ]
+        },
+        {
+          "item_id": "associated_symptoms",
+          "dimension": "associated_symptoms",
+          "label": "Other symptoms mentioned",
+          "description": "Any other symptoms discussed alongside the main symptom (including explicit denials).",
+          "example_questions": [
+            "Have you noticed anything else?"
+          ]
+        },
+        {
+          "item_id": "previous_episodes",
+          "dimension": "previous_episodes",
+          "label": "Previous episodes",
+          "description": "Whether something similar happened before.",
+          "example_questions": [
+            "Have you had this before?"
+          ]
+        },
+        {
+          "item_id": "treatment_tried",
+          "dimension": "treatment_tried",
+          "label": "Treatment tried so far",
+          "description": "Anything the patient has already tried for it, including medication taken, rest, ice or home remedies.",
+          "example_questions": [
+            "Have you tried anything for it?",
+            "Are you taking any medication for it?"
+          ]
+        }
+      ]
+    },
+    {
+      "template_id": "cough_demo_v1",
+      "version": "1.0-demo",
+      "display_name": "Cough — consultation documentation demo",
+      "description": "Illustrative documentation dimensions for patient-reported cough.",
+      "category": "cough",
+      "trigger_concepts": [
+        "cough",
+        "coughing"
+      ],
+      "status": "demo_not_clinically_validated",
+      "review_required": true,
+      "source": "TraceCare hackathon demo",
+      "clinical_reviewer": null,
+      "approval_status": "not_approved",
+      "disclaimer": "Demo template, not a clinical guideline. Items are illustrative and not mandatory questions.",
+      "items": [
+        {
+          "item_id": "onset",
+          "dimension": "onset",
+          "label": "Onset (when it started)",
+          "description": "When the symptom started or first appeared. A question only about injuries or previous episodes is not an onset question.",
+          "example_questions": [
+            "When did it start?",
+            "How long have you had it?"
+          ]
+        },
+        {
+          "item_id": "duration_course",
+          "dimension": "duration_course",
+          "label": "Duration / course",
+          "description": "How long it lasts or has lasted, and whether it is getting better, worse or staying the same.",
+          "example_questions": [
+            "How long does it last?",
+            "Is it getting better or worse?"
+          ]
+        },
+        {
+          "item_id": "character",
+          "dimension": "character",
+          "label": "Description / character",
+          "description": "Dry or productive, and how the patient describes it.",
+          "example_questions": [
+            "How would you describe it?"
+          ]
+        },
+        {
+          "item_id": "timing_frequency",
+          "dimension": "timing_frequency",
+          "label": "Frequency / timing pattern",
+          "description": "How often it happens or any timing pattern (time of day, constant or intermittent).",
+          "example_questions": [
+            "How often does it happen?"
+          ]
+        },
+        {
+          "item_id": "associated_symptoms",
+          "dimension": "associated_symptoms",
+          "label": "Other symptoms mentioned",
+          "description": "Any other symptoms discussed alongside the main symptom (including explicit denials).",
+          "example_questions": [
+            "Have you noticed anything else?"
+          ]
+        },
+        {
+          "item_id": "exposure_contacts",
+          "dimension": "exposure_contacts",
+          "label": "Exposures / contacts",
+          "description": "People around them who are unwell, smoke or other exposures.",
+          "example_questions": [
+            "Has anyone around you been unwell?",
+            "Have you travelled recently?"
+          ]
+        },
+        {
+          "item_id": "previous_episodes",
+          "dimension": "previous_episodes",
+          "label": "Previous episodes",
+          "description": "Whether something similar happened before.",
+          "example_questions": [
+            "Have you had this before?"
+          ]
+        },
+        {
+          "item_id": "treatment_tried",
+          "dimension": "treatment_tried",
+          "label": "Treatment tried so far",
+          "description": "Anything the patient has already tried for it, including medication taken, rest, ice or home remedies.",
+          "example_questions": [
+            "Have you tried anything for it?",
+            "Are you taking any medication for it?"
+          ]
+        }
+      ]
+    },
+    {
+      "template_id": "shortness_of_breath_demo_v1",
+      "version": "1.0-demo",
+      "display_name": "Shortness of breath — consultation documentation demo",
+      "description": "Illustrative documentation dimensions for patient-reported shortness of breath.",
+      "category": "shortness_of_breath",
+      "trigger_concepts": [
+        "shortness of breath",
+        "breathless",
+        "breathlessness",
+        "trouble breathing"
+      ],
+      "status": "demo_not_clinically_validated",
+      "review_required": true,
+      "source": "TraceCare hackathon demo",
+      "clinical_reviewer": null,
+      "approval_status": "not_approved",
+      "disclaimer": "Demo template, not a clinical guideline. Items are illustrative and not mandatory questions.",
+      "items": [
+        {
+          "item_id": "onset",
+          "dimension": "onset",
+          "label": "Onset (when it started)",
+          "description": "When the symptom started or first appeared. A question only about injuries or previous episodes is not an onset question.",
+          "example_questions": [
+            "When did it start?",
+            "How long have you had it?"
+          ]
+        },
+        {
+          "item_id": "duration_course",
+          "dimension": "duration_course",
+          "label": "Duration / course",
+          "description": "How long it lasts or has lasted, and whether it is getting better, worse or staying the same.",
+          "example_questions": [
+            "How long does it last?",
+            "Is it getting better or worse?"
+          ]
+        },
+        {
+          "item_id": "severity_impact",
+          "dimension": "severity_impact",
+          "label": "Severity / impact",
+          "description": "How much it limits activity (e.g. walking, stairs).",
+          "example_questions": [
+            "How bad is it?",
+            "How does it affect your day?"
+          ]
+        },
+        {
+          "item_id": "modifying_factors",
+          "dimension": "modifying_factors",
+          "label": "Triggers / relieving factors",
+          "description": "What makes it better or worse, e.g. exertion, lying flat, rest.",
+          "example_questions": [
+            "Does anything make it better or worse?"
+          ]
+        },
+        {
+          "item_id": "associated_symptoms",
+          "dimension": "associated_symptoms",
+          "label": "Other symptoms mentioned",
+          "description": "Any other symptoms discussed alongside the main symptom (including explicit denials).",
+          "example_questions": [
+            "Have you noticed anything else?"
+          ]
+        },
+        {
+          "item_id": "previous_episodes",
+          "dimension": "previous_episodes",
+          "label": "Previous episodes",
+          "description": "Whether something similar happened before.",
+          "example_questions": [
+            "Have you had this before?"
+          ]
+        },
+        {
+          "item_id": "treatment_tried",
+          "dimension": "treatment_tried",
+          "label": "Treatment tried so far",
+          "description": "Anything the patient has already tried for it, including medication taken, rest, ice or home remedies.",
+          "example_questions": [
+            "Have you tried anything for it?",
+            "Are you taking any medication for it?"
+          ]
+        }
+      ]
+    },
+    {
+      "template_id": "sore_throat_demo_v1",
+      "version": "1.0-demo",
+      "display_name": "Sore throat — consultation documentation demo",
+      "description": "Illustrative documentation dimensions for patient-reported sore throat.",
+      "category": "sore_throat",
+      "trigger_concepts": [
+        "sore throat",
+        "throat pain"
+      ],
+      "status": "demo_not_clinically_validated",
+      "review_required": true,
+      "source": "TraceCare hackathon demo",
+      "clinical_reviewer": null,
+      "approval_status": "not_approved",
+      "disclaimer": "Demo template, not a clinical guideline. Items are illustrative and not mandatory questions.",
+      "items": [
+        {
+          "item_id": "onset",
+          "dimension": "onset",
+          "label": "Onset (when it started)",
+          "description": "When the symptom started or first appeared. A question only about injuries or previous episodes is not an onset question.",
+          "example_questions": [
+            "When did it start?",
+            "How long have you had it?"
+          ]
+        },
+        {
+          "item_id": "severity_impact",
+          "dimension": "severity_impact",
+          "label": "Severity / impact",
+          "description": "How severe it is, e.g. pain on swallowing, eating or drinking.",
+          "example_questions": [
+            "How bad is it?",
+            "How does it affect your day?"
+          ]
+        },
+        {
+          "item_id": "associated_symptoms",
+          "dimension": "associated_symptoms",
+          "label": "Other symptoms mentioned",
+          "description": "Other symptoms such as fever, cough or runny nose (including denials).",
+          "example_questions": [
+            "Have you noticed anything else?"
+          ]
+        },
+        {
+          "item_id": "exposure_contacts",
+          "dimension": "exposure_contacts",
+          "label": "Exposures / contacts",
+          "description": "Relevant exposures such as recent travel, food, or people around them with similar symptoms.",
+          "example_questions": [
+            "Has anyone around you been unwell?",
+            "Have you travelled recently?"
+          ]
+        },
+        {
+          "item_id": "previous_episodes",
+          "dimension": "previous_episodes",
+          "label": "Previous episodes",
+          "description": "Whether something similar happened before.",
+          "example_questions": [
+            "Have you had this before?"
+          ]
+        },
+        {
+          "item_id": "treatment_tried",
+          "dimension": "treatment_tried",
+          "label": "Treatment tried so far",
+          "description": "Anything the patient has already tried for it, including medication taken, rest, ice or home remedies.",
+          "example_questions": [
+            "Have you tried anything for it?",
+            "Are you taking any medication for it?"
+          ]
+        }
+      ]
+    },
+    {
+      "template_id": "fever_demo_v1",
+      "version": "1.0-demo",
+      "display_name": "Fever — consultation documentation demo",
+      "description": "Illustrative documentation dimensions for patient-reported fever.",
+      "category": "fever",
+      "trigger_concepts": [
+        "fever",
+        "high temperature",
+        "feverish"
+      ],
+      "status": "demo_not_clinically_validated",
+      "review_required": true,
+      "source": "TraceCare hackathon demo",
+      "clinical_reviewer": null,
+      "approval_status": "not_approved",
+      "disclaimer": "Demo template, not a clinical guideline. Items are illustrative and not mandatory questions.",
+      "items": [
+        {
+          "item_id": "onset",
+          "dimension": "onset",
+          "label": "Onset (when it started)",
+          "description": "When the symptom started or first appeared. A question only about injuries or previous episodes is not an onset question.",
+          "example_questions": [
+            "When did it start?",
+            "How long have you had it?"
+          ]
+        },
+        {
+          "item_id": "duration_course",
+          "dimension": "duration_course",
+          "label": "Duration / course",
+          "description": "How long it lasts or has lasted, and whether it is getting better, worse or staying the same.",
+          "example_questions": [
+            "How long does it last?",
+            "Is it getting better or worse?"
+          ]
+        },
+        {
+          "item_id": "severity_impact",
+          "dimension": "severity_impact",
+          "label": "Temperature / severity",
+          "description": "Measured temperature or how unwell the patient feels.",
+          "example_questions": [
+            "How bad is it?",
+            "How does it affect your day?"
+          ]
+        },
+        {
+          "item_id": "timing_frequency",
+          "dimension": "timing_frequency",
+          "label": "Frequency / timing pattern",
+          "description": "How often it happens or any timing pattern (time of day, constant or intermittent).",
+          "example_questions": [
+            "How often does it happen?"
+          ]
+        },
+        {
+          "item_id": "associated_symptoms",
+          "dimension": "associated_symptoms",
+          "label": "Other symptoms mentioned",
+          "description": "Any other symptoms discussed alongside the main symptom (including explicit denials).",
+          "example_questions": [
+            "Have you noticed anything else?"
+          ]
+        },
+        {
+          "item_id": "exposure_contacts",
+          "dimension": "exposure_contacts",
+          "label": "Exposures / contacts",
+          "description": "Relevant exposures such as recent travel, food, or people around them with similar symptoms.",
+          "example_questions": [
+            "Has anyone around you been unwell?",
+            "Have you travelled recently?"
+          ]
+        },
+        {
+          "item_id": "treatment_tried",
+          "dimension": "treatment_tried",
+          "label": "Treatment tried so far",
+          "description": "Anything the patient has already tried for it, including medication taken, rest, ice or home remedies.",
+          "example_questions": [
+            "Have you tried anything for it?",
+            "Are you taking any medication for it?"
+          ]
+        }
+      ]
+    },
+    {
+      "template_id": "fatigue_demo_v1",
+      "version": "1.0-demo",
+      "display_name": "Fatigue / tiredness — consultation documentation demo",
+      "description": "Illustrative documentation dimensions for patient-reported fatigue / tiredness.",
+      "category": "fatigue",
+      "trigger_concepts": [
+        "fatigue",
+        "tiredness",
+        "tired",
+        "exhaustion"
+      ],
+      "status": "demo_not_clinically_validated",
+      "review_required": true,
+      "source": "TraceCare hackathon demo",
+      "clinical_reviewer": null,
+      "approval_status": "not_approved",
+      "disclaimer": "Demo template, not a clinical guideline. Items are illustrative and not mandatory questions.",
+      "items": [
+        {
+          "item_id": "onset",
+          "dimension": "onset",
+          "label": "Onset (when it started)",
+          "description": "When the symptom started or first appeared. A question only about injuries or previous episodes is not an onset question.",
+          "example_questions": [
+            "When did it start?",
+            "How long have you had it?"
+          ]
+        },
+        {
+          "item_id": "duration_course",
+          "dimension": "duration_course",
+          "label": "Duration / course",
+          "description": "How long it lasts or has lasted, and whether it is getting better, worse or staying the same.",
+          "example_questions": [
+            "How long does it last?",
+            "Is it getting better or worse?"
+          ]
+        },
+        {
+          "item_id": "severity_impact",
+          "dimension": "severity_impact",
+          "label": "Severity / impact",
+          "description": "How severe it is, or how it affects daily life, work or sleep.",
+          "example_questions": [
+            "How bad is it?",
+            "How does it affect your day?"
+          ]
+        },
+        {
+          "item_id": "timing_frequency",
+          "dimension": "timing_frequency",
+          "label": "Frequency / timing pattern",
+          "description": "How often it happens or any timing pattern (time of day, constant or intermittent).",
+          "example_questions": [
+            "How often does it happen?"
+          ]
+        },
+        {
+          "item_id": "sleep_pattern",
+          "dimension": "sleep_pattern",
+          "label": "Sleep",
+          "description": "How the symptom relates to sleep, or the sleep pattern itself.",
+          "example_questions": [
+            "How are you sleeping?"
+          ]
+        },
+        {
+          "item_id": "modifying_factors",
+          "dimension": "modifying_factors",
+          "label": "Triggers / relieving factors",
+          "description": "What makes it better or worse.",
+          "example_questions": [
+            "Does anything make it better or worse?"
+          ]
+        },
+        {
+          "item_id": "associated_symptoms",
+          "dimension": "associated_symptoms",
+          "label": "Other symptoms mentioned",
+          "description": "Any other symptoms discussed alongside the main symptom (including explicit denials).",
+          "example_questions": [
+            "Have you noticed anything else?"
+          ]
+        }
+      ]
+    },
+    {
+      "template_id": "dizziness_demo_v1",
+      "version": "1.0-demo",
+      "display_name": "Dizziness — consultation documentation demo",
+      "description": "Illustrative documentation dimensions for patient-reported dizziness.",
+      "category": "dizziness",
+      "trigger_concepts": [
+        "dizziness",
+        "dizzy",
+        "lightheaded",
+        "vertigo"
+      ],
+      "status": "demo_not_clinically_validated",
+      "review_required": true,
+      "source": "TraceCare hackathon demo",
+      "clinical_reviewer": null,
+      "approval_status": "not_approved",
+      "disclaimer": "Demo template, not a clinical guideline. Items are illustrative and not mandatory questions.",
+      "items": [
+        {
+          "item_id": "onset",
+          "dimension": "onset",
+          "label": "Onset (when it started)",
+          "description": "When the symptom started or first appeared. A question only about injuries or previous episodes is not an onset question.",
+          "example_questions": [
+            "When did it start?",
+            "How long have you had it?"
+          ]
+        },
+        {
+          "item_id": "character",
+          "dimension": "character",
+          "label": "Description / character",
+          "description": "How it feels, e.g. spinning, light-headed or unsteady.",
+          "example_questions": [
+            "How would you describe it?"
+          ]
+        },
+        {
+          "item_id": "timing_frequency",
+          "dimension": "timing_frequency",
+          "label": "Frequency / timing pattern",
+          "description": "How often it happens or any timing pattern (time of day, constant or intermittent).",
+          "example_questions": [
+            "How often does it happen?"
+          ]
+        },
+        {
+          "item_id": "modifying_factors",
+          "dimension": "modifying_factors",
+          "label": "Triggers / relieving factors",
+          "description": "What brings it on or helps, e.g. position changes.",
+          "example_questions": [
+            "Does anything make it better or worse?"
+          ]
+        },
+        {
+          "item_id": "associated_symptoms",
+          "dimension": "associated_symptoms",
+          "label": "Other symptoms mentioned",
+          "description": "Any other symptoms discussed alongside the main symptom (including explicit denials).",
+          "example_questions": [
+            "Have you noticed anything else?"
+          ]
+        },
+        {
+          "item_id": "previous_episodes",
+          "dimension": "previous_episodes",
+          "label": "Previous episodes",
+          "description": "Whether something similar happened before.",
+          "example_questions": [
+            "Have you had this before?"
+          ]
+        },
+        {
+          "item_id": "treatment_tried",
+          "dimension": "treatment_tried",
+          "label": "Treatment tried so far",
+          "description": "Anything the patient has already tried for it, including medication taken, rest, ice or home remedies.",
+          "example_questions": [
+            "Have you tried anything for it?",
+            "Are you taking any medication for it?"
+          ]
+        }
+      ]
+    },
+    {
+      "template_id": "rash_demo_v1",
+      "version": "1.0-demo",
+      "display_name": "Skin rash — consultation documentation demo",
+      "description": "Illustrative documentation dimensions for patient-reported skin rash.",
+      "category": "rash",
+      "trigger_concepts": [
+        "rash",
+        "skin rash",
+        "hives",
+        "itchy skin",
+        "spots"
+      ],
+      "status": "demo_not_clinically_validated",
+      "review_required": true,
+      "source": "TraceCare hackathon demo",
+      "clinical_reviewer": null,
+      "approval_status": "not_approved",
+      "disclaimer": "Demo template, not a clinical guideline. Items are illustrative and not mandatory questions.",
+      "items": [
+        {
+          "item_id": "onset",
+          "dimension": "onset",
+          "label": "Onset (when it started)",
+          "description": "When the symptom started or first appeared. A question only about injuries or previous episodes is not an onset question.",
+          "example_questions": [
+            "When did it start?",
+            "How long have you had it?"
+          ]
+        },
+        {
+          "item_id": "location",
+          "dimension": "location",
+          "label": "Location",
+          "description": "Where the symptom is felt or seen.",
+          "example_questions": [
+            "Where exactly do you feel it?"
+          ]
+        },
+        {
+          "item_id": "character",
+          "dimension": "character",
+          "label": "Appearance",
+          "description": "How the rash looks and feels.",
+          "example_questions": [
+            "How would you describe it?"
+          ]
+        },
+        {
+          "item_id": "severity_impact",
+          "dimension": "severity_impact",
+          "label": "Severity / impact",
+          "description": "Itch, pain, or effect on sleep and daily life.",
+          "example_questions": [
+            "How bad is it?",
+            "How does it affect your day?"
+          ]
+        },
+        {
+          "item_id": "modifying_factors",
+          "dimension": "modifying_factors",
+          "label": "Triggers / relieving factors",
+          "description": "Possible triggers (new products, foods, medicines) or what helps.",
+          "example_questions": [
+            "Does anything make it better or worse?"
+          ]
+        },
+        {
+          "item_id": "associated_symptoms",
+          "dimension": "associated_symptoms",
+          "label": "Other symptoms mentioned",
+          "description": "Any other symptoms discussed alongside the main symptom (including explicit denials).",
+          "example_questions": [
+            "Have you noticed anything else?"
+          ]
+        },
+        {
+          "item_id": "previous_episodes",
+          "dimension": "previous_episodes",
+          "label": "Previous episodes",
+          "description": "Whether something similar happened before.",
+          "example_questions": [
+            "Have you had this before?"
+          ]
+        },
+        {
+          "item_id": "treatment_tried",
+          "dimension": "treatment_tried",
+          "label": "Treatment tried so far",
+          "description": "Anything the patient has already tried for it, including medication taken, rest, ice or home remedies.",
+          "example_questions": [
+            "Have you tried anything for it?",
+            "Are you taking any medication for it?"
+          ]
+        }
+      ]
+    },
+    {
+      "template_id": "urinary_symptoms_demo_v1",
+      "version": "1.0-demo",
+      "display_name": "Urinary symptoms — consultation documentation demo",
+      "description": "Illustrative documentation dimensions for patient-reported urinary symptoms.",
+      "category": "urinary",
+      "trigger_concepts": [
+        "urinary symptoms",
+        "burning urination",
+        "painful urination",
+        "frequent urination",
+        "uti"
+      ],
+      "status": "demo_not_clinically_validated",
+      "review_required": true,
+      "source": "TraceCare hackathon demo",
+      "clinical_reviewer": null,
+      "approval_status": "not_approved",
+      "disclaimer": "Demo template, not a clinical guideline. Items are illustrative and not mandatory questions.",
+      "items": [
+        {
+          "item_id": "onset",
+          "dimension": "onset",
+          "label": "Onset (when it started)",
+          "description": "When the symptom started or first appeared. A question only about injuries or previous episodes is not an onset question.",
+          "example_questions": [
+            "When did it start?",
+            "How long have you had it?"
+          ]
+        },
+        {
+          "item_id": "character",
+          "dimension": "character",
+          "label": "Description / character",
+          "description": "How it feels, e.g. burning or pain when passing urine.",
+          "example_questions": [
+            "How would you describe it?"
+          ]
+        },
+        {
+          "item_id": "timing_frequency",
+          "dimension": "timing_frequency",
+          "label": "Frequency / timing pattern",
+          "description": "How often, urgency, or night-time urination.",
+          "example_questions": [
+            "How often does it happen?"
+          ]
+        },
+        {
+          "item_id": "associated_symptoms",
+          "dimension": "associated_symptoms",
+          "label": "Other symptoms mentioned",
+          "description": "Any other symptoms discussed alongside the main symptom (including explicit denials).",
+          "example_questions": [
+            "Have you noticed anything else?"
+          ]
+        },
+        {
+          "item_id": "previous_episodes",
+          "dimension": "previous_episodes",
+          "label": "Previous episodes",
+          "description": "Whether something similar happened before.",
+          "example_questions": [
+            "Have you had this before?"
+          ]
+        },
+        {
+          "item_id": "treatment_tried",
+          "dimension": "treatment_tried",
+          "label": "Treatment tried so far",
+          "description": "Anything the patient has already tried for it, including medication taken, rest, ice or home remedies.",
+          "example_questions": [
+            "Have you tried anything for it?",
+            "Are you taking any medication for it?"
+          ]
+        }
+      ]
+    },
+    {
+      "template_id": "ear_pain_demo_v1",
+      "version": "1.0-demo",
+      "display_name": "Ear pain — consultation documentation demo",
+      "description": "Illustrative documentation dimensions for patient-reported ear pain.",
+      "category": "ear_pain",
+      "trigger_concepts": [
+        "ear pain",
+        "earache",
+        "ear ache"
+      ],
+      "status": "demo_not_clinically_validated",
+      "review_required": true,
+      "source": "TraceCare hackathon demo",
+      "clinical_reviewer": null,
+      "approval_status": "not_approved",
+      "disclaimer": "Demo template, not a clinical guideline. Items are illustrative and not mandatory questions.",
+      "items": [
+        {
+          "item_id": "onset",
+          "dimension": "onset",
+          "label": "Onset (when it started)",
+          "description": "When the symptom started or first appeared. A question only about injuries or previous episodes is not an onset question.",
+          "example_questions": [
+            "When did it start?",
+            "How long have you had it?"
+          ]
+        },
+        {
+          "item_id": "location",
+          "dimension": "location",
+          "label": "Location",
+          "description": "Which ear, or both.",
+          "example_questions": [
+            "Where exactly do you feel it?"
+          ]
+        },
+        {
+          "item_id": "severity_impact",
+          "dimension": "severity_impact",
+          "label": "Severity / impact",
+          "description": "How severe it is, or how it affects daily life, work or sleep.",
+          "example_questions": [
+            "How bad is it?",
+            "How does it affect your day?"
+          ]
+        },
+        {
+          "item_id": "associated_symptoms",
+          "dimension": "associated_symptoms",
+          "label": "Other symptoms mentioned",
+          "description": "Other symptoms such as hearing changes, discharge or fever (including denials).",
+          "example_questions": [
+            "Have you noticed anything else?"
+          ]
+        },
+        {
+          "item_id": "previous_episodes",
+          "dimension": "previous_episodes",
+          "label": "Previous episodes",
+          "description": "Whether something similar happened before.",
+          "example_questions": [
+            "Have you had this before?"
+          ]
+        },
+        {
+          "item_id": "treatment_tried",
+          "dimension": "treatment_tried",
+          "label": "Treatment tried so far",
+          "description": "Anything the patient has already tried for it, including medication taken, rest, ice or home remedies.",
+          "example_questions": [
+            "Have you tried anything for it?",
+            "Are you taking any medication for it?"
+          ]
+        }
+      ]
+    },
+    {
+      "template_id": "palpitations_demo_v1",
+      "version": "1.0-demo",
+      "display_name": "Palpitations — consultation documentation demo",
+      "description": "Illustrative documentation dimensions for patient-reported palpitations.",
+      "category": "palpitations",
+      "trigger_concepts": [
+        "palpitations",
+        "racing heart",
+        "heart racing",
+        "irregular heartbeat"
+      ],
+      "status": "demo_not_clinically_validated",
+      "review_required": true,
+      "source": "TraceCare hackathon demo",
+      "clinical_reviewer": null,
+      "approval_status": "not_approved",
+      "disclaimer": "Demo template, not a clinical guideline. Items are illustrative and not mandatory questions.",
+      "items": [
+        {
+          "item_id": "onset",
+          "dimension": "onset",
+          "label": "Onset (when it started)",
+          "description": "When the symptom started or first appeared. A question only about injuries or previous episodes is not an onset question.",
+          "example_questions": [
+            "When did it start?",
+            "How long have you had it?"
+          ]
+        },
+        {
+          "item_id": "character",
+          "dimension": "character",
+          "label": "Description / character",
+          "description": "How it feels, e.g. racing, pounding or skipping.",
+          "example_questions": [
+            "How would you describe it?"
+          ]
+        },
+        {
+          "item_id": "timing_frequency",
+          "dimension": "timing_frequency",
+          "label": "Frequency / timing pattern",
+          "description": "How often it happens or any timing pattern (time of day, constant or intermittent).",
+          "example_questions": [
+            "How often does it happen?"
+          ]
+        },
+        {
+          "item_id": "duration_course",
+          "dimension": "duration_course",
+          "label": "Episode duration",
+          "description": "How long each episode lasts.",
+          "example_questions": [
+            "How long does it last?",
+            "Is it getting better or worse?"
+          ]
+        },
+        {
+          "item_id": "modifying_factors",
+          "dimension": "modifying_factors",
+          "label": "Triggers / relieving factors",
+          "description": "What brings it on or helps, e.g. caffeine, exertion, stress.",
+          "example_questions": [
+            "Does anything make it better or worse?"
+          ]
+        },
+        {
+          "item_id": "associated_symptoms",
+          "dimension": "associated_symptoms",
+          "label": "Other symptoms mentioned",
+          "description": "Any other symptoms discussed alongside the main symptom (including explicit denials).",
+          "example_questions": [
+            "Have you noticed anything else?"
+          ]
+        },
+        {
+          "item_id": "previous_episodes",
+          "dimension": "previous_episodes",
+          "label": "Previous episodes",
+          "description": "Whether something similar happened before.",
+          "example_questions": [
+            "Have you had this before?"
+          ]
+        }
+      ]
+    },
+    {
+      "template_id": "anxiety_low_mood_demo_v1",
+      "version": "1.0-demo",
+      "display_name": "Anxiety / low mood — consultation documentation demo",
+      "description": "Illustrative documentation dimensions for patient-reported anxiety / low mood.",
+      "category": "mental_health",
+      "trigger_concepts": [
+        "anxiety",
+        "low mood",
+        "depression",
+        "stress",
+        "panic"
+      ],
+      "status": "demo_not_clinically_validated",
+      "review_required": true,
+      "source": "TraceCare hackathon demo",
+      "clinical_reviewer": null,
+      "approval_status": "not_approved",
+      "disclaimer": "Demo template, not a clinical guideline. Items are illustrative and not mandatory questions.",
+      "items": [
+        {
+          "item_id": "onset",
+          "dimension": "onset",
+          "label": "Onset (when it started)",
+          "description": "When the symptom started or first appeared. A question only about injuries or previous episodes is not an onset question.",
+          "example_questions": [
+            "When did it start?",
+            "How long have you had it?"
+          ]
+        },
+        {
+          "item_id": "duration_course",
+          "dimension": "duration_course",
+          "label": "Duration / course",
+          "description": "How long it lasts or has lasted, and whether it is getting better, worse or staying the same.",
+          "example_questions": [
+            "How long does it last?",
+            "Is it getting better or worse?"
+          ]
+        },
+        {
+          "item_id": "severity_impact",
+          "dimension": "severity_impact",
+          "label": "Severity / impact",
+          "description": "How it affects daily life, work or relationships.",
+          "example_questions": [
+            "How bad is it?",
+            "How does it affect your day?"
+          ]
+        },
+        {
+          "item_id": "sleep_pattern",
+          "dimension": "sleep_pattern",
+          "label": "Sleep",
+          "description": "How the symptom relates to sleep, or the sleep pattern itself.",
+          "example_questions": [
+            "How are you sleeping?"
+          ]
+        },
+        {
+          "item_id": "modifying_factors",
+          "dimension": "modifying_factors",
+          "label": "Stressors / what helps",
+          "description": "Stressors or things that make it better or worse.",
+          "example_questions": [
+            "Does anything make it better or worse?"
+          ]
+        },
+        {
+          "item_id": "associated_symptoms",
+          "dimension": "associated_symptoms",
+          "label": "Other symptoms mentioned",
+          "description": "Any other symptoms discussed alongside the main symptom (including explicit denials).",
+          "example_questions": [
+            "Have you noticed anything else?"
+          ]
+        },
+        {
+          "item_id": "previous_episodes",
+          "dimension": "previous_episodes",
+          "label": "Previous episodes",
+          "description": "Whether something similar happened before.",
+          "example_questions": [
+            "Have you had this before?"
+          ]
+        },
+        {
+          "item_id": "treatment_tried",
+          "dimension": "treatment_tried",
+          "label": "Treatment tried so far",
+          "description": "Anything the patient has already tried for it, including medication taken, rest, ice or home remedies.",
+          "example_questions": [
+            "Have you tried anything for it?",
+            "Are you taking any medication for it?"
+          ]
+        }
+      ]
+    },
+    {
+      "template_id": "insomnia_demo_v1",
+      "version": "1.0-demo",
+      "display_name": "Sleep problems — consultation documentation demo",
+      "description": "Illustrative documentation dimensions for patient-reported sleep problems.",
+      "category": "insomnia",
+      "trigger_concepts": [
+        "insomnia",
+        "trouble sleeping",
+        "sleep problems",
+        "difficulty sleeping"
+      ],
+      "status": "demo_not_clinically_validated",
+      "review_required": true,
+      "source": "TraceCare hackathon demo",
+      "clinical_reviewer": null,
+      "approval_status": "not_approved",
+      "disclaimer": "Demo template, not a clinical guideline. Items are illustrative and not mandatory questions.",
+      "items": [
+        {
+          "item_id": "onset",
+          "dimension": "onset",
+          "label": "Onset (when it started)",
+          "description": "When the symptom started or first appeared. A question only about injuries or previous episodes is not an onset question.",
+          "example_questions": [
+            "When did it start?",
+            "How long have you had it?"
+          ]
+        },
+        {
+          "item_id": "duration_course",
+          "dimension": "duration_course",
+          "label": "Duration / course",
+          "description": "How long it lasts or has lasted, and whether it is getting better, worse or staying the same.",
+          "example_questions": [
+            "How long does it last?",
+            "Is it getting better or worse?"
+          ]
+        },
+        {
+          "item_id": "character",
+          "dimension": "character",
+          "label": "Description / character",
+          "description": "Trouble falling asleep, staying asleep, or waking early.",
+          "example_questions": [
+            "How would you describe it?"
+          ]
+        },
+        {
+          "item_id": "severity_impact",
+          "dimension": "severity_impact",
+          "label": "Severity / impact",
+          "description": "Effect on daytime functioning.",
+          "example_questions": [
+            "How bad is it?",
+            "How does it affect your day?"
+          ]
+        },
+        {
+          "item_id": "modifying_factors",
+          "dimension": "modifying_factors",
+          "label": "Triggers / relieving factors",
+          "description": "Things that help or worsen sleep, e.g. caffeine, screens, stress.",
+          "example_questions": [
+            "Does anything make it better or worse?"
+          ]
+        },
+        {
+          "item_id": "previous_episodes",
+          "dimension": "previous_episodes",
+          "label": "Previous episodes",
+          "description": "Whether something similar happened before.",
+          "example_questions": [
+            "Have you had this before?"
+          ]
+        },
+        {
+          "item_id": "treatment_tried",
+          "dimension": "treatment_tried",
+          "label": "Treatment tried so far",
+          "description": "Anything the patient has already tried for it, including medication taken, rest, ice or home remedies.",
+          "example_questions": [
+            "Have you tried anything for it?",
+            "Are you taking any medication for it?"
+          ]
+        }
+      ]
+    },
+    {
+      "template_id": "eye_symptoms_demo_v1",
+      "version": "1.0-demo",
+      "display_name": "Eye symptoms — consultation documentation demo",
+      "description": "Illustrative documentation dimensions for patient-reported eye symptoms.",
+      "category": "eye",
+      "trigger_concepts": [
+        "eye pain",
+        "red eye",
+        "itchy eyes",
+        "eye symptoms",
+        "watery eyes"
+      ],
+      "status": "demo_not_clinically_validated",
+      "review_required": true,
+      "source": "TraceCare hackathon demo",
+      "clinical_reviewer": null,
+      "approval_status": "not_approved",
+      "disclaimer": "Demo template, not a clinical guideline. Items are illustrative and not mandatory questions.",
+      "items": [
+        {
+          "item_id": "onset",
+          "dimension": "onset",
+          "label": "Onset (when it started)",
+          "description": "When the symptom started or first appeared. A question only about injuries or previous episodes is not an onset question.",
+          "example_questions": [
+            "When did it start?",
+            "How long have you had it?"
+          ]
+        },
+        {
+          "item_id": "location",
+          "dimension": "location",
+          "label": "Location",
+          "description": "Which eye, or both.",
+          "example_questions": [
+            "Where exactly do you feel it?"
+          ]
+        },
+        {
+          "item_id": "character",
+          "dimension": "character",
+          "label": "Description / character",
+          "description": "Redness, itch, discharge, pain or vision changes as described.",
+          "example_questions": [
+            "How would you describe it?"
+          ]
+        },
+        {
+          "item_id": "severity_impact",
+          "dimension": "severity_impact",
+          "label": "Severity / impact",
+          "description": "How severe it is, or how it affects daily life, work or sleep.",
+          "example_questions": [
+            "How bad is it?",
+            "How does it affect your day?"
+          ]
+        },
+        {
+          "item_id": "associated_symptoms",
+          "dimension": "associated_symptoms",
+          "label": "Other symptoms mentioned",
+          "description": "Any other symptoms discussed alongside the main symptom (including explicit denials).",
+          "example_questions": [
+            "Have you noticed anything else?"
+          ]
+        },
+        {
+          "item_id": "previous_episodes",
+          "dimension": "previous_episodes",
+          "label": "Previous episodes",
+          "description": "Whether something similar happened before.",
+          "example_questions": [
+            "Have you had this before?"
+          ]
+        },
+        {
+          "item_id": "treatment_tried",
+          "dimension": "treatment_tried",
+          "label": "Treatment tried so far",
+          "description": "Anything the patient has already tried for it, including medication taken, rest, ice or home remedies.",
+          "example_questions": [
+            "Have you tried anything for it?",
+            "Are you taking any medication for it?"
+          ]
+        }
+      ]
+    },
+    {
+      "template_id": "general_symptom_demo_v1",
+      "version": "1.0-demo",
+      "display_name": "General symptom (fallback) — consultation documentation demo",
+      "description": "Generic documentation dimensions used when no symptom-specific demo template matches the patient's main symptom.",
+      "category": "general",
+      "trigger_concepts": [],
+      "status": "demo_not_clinically_validated",
+      "review_required": true,
+      "source": "TraceCare hackathon demo",
+      "clinical_reviewer": null,
+      "approval_status": "not_approved",
+      "disclaimer": "Demo template, not a clinical guideline. Items are illustrative and not mandatory questions.",
+      "items": [
+        {
+          "item_id": "onset",
+          "dimension": "onset",
+          "label": "Onset (when it started)",
+          "description": "When the symptom started or first appeared. A question only about injuries or previous episodes is not an onset question.",
+          "example_questions": [
+            "When did it start?",
+            "How long have you had it?"
+          ]
+        },
+        {
+          "item_id": "duration_course",
+          "dimension": "duration_course",
+          "label": "Duration / course",
+          "description": "How long it lasts or has lasted, and whether it is getting better, worse or staying the same.",
+          "example_questions": [
+            "How long does it last?",
+            "Is it getting better or worse?"
+          ]
+        },
+        {
+          "item_id": "location",
+          "dimension": "location",
+          "label": "Location",
+          "description": "Where the symptom is felt or seen.",
+          "example_questions": [
+            "Where exactly do you feel it?"
+          ]
+        },
+        {
+          "item_id": "character",
+          "dimension": "character",
+          "label": "Description / character",
+          "description": "How the patient describes the symptom.",
+          "example_questions": [
+            "How would you describe it?"
+          ]
+        },
+        {
+          "item_id": "severity_impact",
+          "dimension": "severity_impact",
+          "label": "Severity / impact",
+          "description": "How severe it is, or how it affects daily life, work or sleep.",
+          "example_questions": [
+            "How bad is it?",
+            "How does it affect your day?"
+          ]
+        },
+        {
+          "item_id": "timing_frequency",
+          "dimension": "timing_frequency",
+          "label": "Frequency / timing pattern",
+          "description": "How often it happens or any timing pattern (time of day, constant or intermittent).",
+          "example_questions": [
+            "How often does it happen?"
+          ]
+        },
+        {
+          "item_id": "modifying_factors",
+          "dimension": "modifying_factors",
+          "label": "Triggers / relieving factors",
+          "description": "What makes it better or worse.",
+          "example_questions": [
+            "Does anything make it better or worse?"
+          ]
+        },
+        {
+          "item_id": "associated_symptoms",
+          "dimension": "associated_symptoms",
+          "label": "Other symptoms mentioned",
+          "description": "Any other symptoms discussed alongside the main symptom (including explicit denials).",
+          "example_questions": [
+            "Have you noticed anything else?"
+          ]
+        },
+        {
+          "item_id": "previous_episodes",
+          "dimension": "previous_episodes",
+          "label": "Previous episodes",
+          "description": "Whether something similar happened before.",
+          "example_questions": [
+            "Have you had this before?"
+          ]
+        },
+        {
+          "item_id": "treatment_tried",
+          "dimension": "treatment_tried",
+          "label": "Treatment tried so far",
+          "description": "Anything the patient has already tried for it, including medication taken, rest, ice or home remedies.",
+          "example_questions": [
+            "Have you tried anything for it?",
+            "Are you taking any medication for it?"
           ]
         }
       ]

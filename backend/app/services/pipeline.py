@@ -12,9 +12,17 @@ from app.schemas.outputs import AnalyzeResponse, PatientExplanation, PatientInfo
 from app.services import evidence_validator as ev
 from app.services.coverage_calculator import calculate_coverage, no_template_report
 from app.services.note_generator import generate_clinical_note
-from app.services.patient_explainer import validate_patient_statements
+from app.services.patient_explainer import (
+    DISCLAIMERS,
+    INTROS,
+    SECTION_HEADINGS,
+    build_plain_text,
+    validate_patient_statements,
+)
 from app.services.patient_identity import age_on, detect_patient_name, validate_temp_personnummer
 from app.services.transcript_parser import parse_transcript
+
+MAX_TEMPLATES = 2  # coverage reports per encounter (main symptom first)
 
 STANDARD_WARNINGS = [
     "Prototype output for synthetic / role-played data only: clinician review is required.",
@@ -29,16 +37,40 @@ def applied_trigger_concepts(reports: list[CoverageReport], templates: list[Chec
     return {c for t in templates if t.template_id in applied for c in t.trigger_concepts}
 
 
+def not_established_topics(reports: list[CoverageReport], language: str = "en") -> list[str]:
+    from app.services.checklist_service import load_registry
+    from app.services.patient_explainer import DIMENSION_LABELS_SV
+
+    registry = load_registry()
+    topics = []
+    for r in reports:
+        template = registry.get(r.template_id or "")
+        dims = {i.item_id: i.dimension for i in template.items} if template else {}
+        for i in r.items:
+            if i.status == "not_found_in_transcript":
+                dim = dims.get(i.item_id)
+                topics.append(DIMENSION_LABELS_SV.get(dim, i.label) if language == "sv" and dim else i.label)
+    return list(dict.fromkeys(topics))
+
+
 def build_patient_explanation(provider: LLMProvider, facts: list[MedicalFact], reports: list[CoverageReport],
-                              language: str) -> tuple[PatientExplanation, list[ValidationFinding]]:
+                              language: str, patient_name: str | None, date_text: str
+                              ) -> tuple[PatientExplanation, list[ValidationFinding]]:
     accepted = [f for f in facts if f.evidence_status == "source_linked"]
     findings: list[ValidationFinding] = []
     statements = []
+    # The demo renderer only writes English; Claude writes the requested language.
+    out_lang = language if provider.name != "demo" else "en"
     if accepted:
-        output = provider.explain_for_patient(accepted, language)
-        statements, findings = validate_patient_statements(output, accepted)
-    not_established = [i.label for r in reports for i in r.items if i.status == "not_found_in_transcript"]
-    return PatientExplanation(language=language, statements=statements, not_established=not_established), findings
+        output = provider.explain_for_patient(accepted, out_lang)
+        statements, findings = validate_patient_statements(output, accepted, out_lang)
+    not_established = not_established_topics(reports, out_lang)
+    lang = "sv" if out_lang == "sv" else "en"
+    return PatientExplanation(
+        language=out_lang, disclaimer=DISCLAIMERS[lang], intro=INTROS[lang], statements=statements,
+        not_established=not_established, section_headings=SECTION_HEADINGS[lang],
+        plain_text=build_plain_text(statements, not_established, out_lang, patient_name, date_text),
+    ), findings
 
 
 def build_patient_summary(patient: PatientInfo | None, segments) -> PatientSummary:
@@ -89,11 +121,14 @@ def run_analysis(transcript: str, templates: list[ChecklistTemplate], provider: 
             findings.append(ValidationFinding(code="unknown_template", severity="error", ref_type="template",
                                               ref_id=tid, message=f"Checklist evidence for unknown template '{tid}' "
                                                                   "was ignored."))
-        # A template applies only if a source-linked, patient-mentioned symptom was mapped to it.
-        applied_ids = [s.template_id for s in symptoms if s.template_id and s.evidence_status == "source_linked"]
-        for template in templates:
-            if template.template_id not in applied_ids:
-                continue
+        # A template applies only if a source-linked, patient-mentioned (positive) symptom was mapped to it.
+        # Order follows the transcript (main symptom first); at most MAX_TEMPLATES reports.
+        applied_ids = list(dict.fromkeys(
+            s.template_id for s in symptoms
+            if s.template_id and s.evidence_status == "source_linked" and s.polarity == "positive"))[:MAX_TEMPLATES]
+        by_id = {t.template_id: t for t in templates}
+        for template_id in applied_ids:
+            template = by_id[template_id]
             items, cl_findings = ev.validate_checklist(extraction.checklist_assessments, template, segments, known_ids)
             findings += cl_findings
             reports.append(calculate_coverage(template, items))
@@ -104,8 +139,11 @@ def run_analysis(transcript: str, templates: list[ChecklistTemplate], provider: 
             "Coverage not available: no patient-mentioned symptom in this transcript matched a configured "
             f"checklist template (selected: {names}). TraceCare does not invent checklists."))
 
-    note = generate_clinical_note(facts, reports, applied_trigger_concepts(reports, templates))
-    explanation, pe_findings = build_patient_explanation(provider, facts, reports, language)
+    note = generate_clinical_note(facts, reports, applied_trigger_concepts(reports, templates), symptoms)
+    patient_summary = build_patient_summary(patient, segments)
+    created_at = datetime.now(timezone.utc)
+    explanation, pe_findings = build_patient_explanation(provider, facts, reports, language,
+                                                         patient_summary.display_name, f"{created_at:%Y-%m-%d}")
     findings += pe_findings
 
     # Every generated statement must cite known facts (defence in depth for the note renderer).
@@ -123,14 +161,16 @@ def run_analysis(transcript: str, templates: list[ChecklistTemplate], provider: 
                            "may be wrong; coverage figures are unreliable until the transcript is corrected and reviewed.")
     if provider.name == "demo":
         warnings.insert(0, "Demo mode: results come from a deterministic rule-based provider, not an AI model.")
+        if language == "sv":
+            warnings.insert(1, "Swedish patient summaries need the Claude provider; the demo engine wrote English.")
     return AnalyzeResponse(
         encounter_id=str(uuid.uuid4()),
-        created_at=datetime.now(timezone.utc),
+        created_at=created_at,
         provider=provider.name,  # type: ignore[arg-type]
         provider_label=provider.label,
         model=provider.model,
         language=language,
-        patient=build_patient_summary(patient, segments),
+        patient=patient_summary,
         chief_concern=chief_concern_text(note),
         segments=segments,
         facts=facts,
@@ -148,9 +188,12 @@ def run_analysis(transcript: str, templates: list[ChecklistTemplate], provider: 
 def regenerate_after_review(result: AnalyzeResponse, templates: list[ChecklistTemplate]) -> AnalyzeResponse:
     """Recompute the note's follow-up section and overall status after a reviewer override."""
     result.clinical_note = generate_clinical_note(
-        result.facts, result.coverage_reports, applied_trigger_concepts(result.coverage_reports, templates))
-    result.patient_explanation.not_established = [
-        i.label for r in result.coverage_reports for i in r.items if i.status == "not_found_in_transcript"]
+        result.facts, result.coverage_reports, applied_trigger_concepts(result.coverage_reports, templates),
+        result.symptoms)
+    pe = result.patient_explanation
+    pe.not_established = not_established_topics(result.coverage_reports, pe.language)
+    pe.plain_text = build_plain_text(pe.statements, pe.not_established, pe.language, result.patient.display_name,
+                                     f"{result.created_at:%Y-%m-%d}")
     reviewed = all(r.review_status == "reviewed" for r in result.coverage_reports if r.items)
     result.status = "reviewed" if reviewed and any(r.items for r in result.coverage_reports) \
         else "provisional_review_required"

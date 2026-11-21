@@ -11,7 +11,7 @@ import re
 
 from app.llm.schemas import ChecklistCandidate, FactCandidate, SymptomCandidate
 from app.schemas.coverage import ChecklistAssessment, ChecklistTemplate, ItemStatus
-from app.schemas.facts import EvidenceReference, MedicalFact, SymptomMention
+from app.schemas.facts import CLINICIAN_CATEGORIES, EvidenceReference, MedicalFact, SymptomMention
 from app.schemas.outputs import ValidationFinding
 from app.schemas.transcript import TranscriptSegment
 
@@ -153,7 +153,16 @@ def validate_facts(candidates: list[FactCandidate], segments: list[TranscriptSeg
         # Speaker plausibility: patient-reported information should come from the patient side.
         speakers = {seg_index[sid].speaker for sid in valid_ids}
         quote_speaker = evidence[0].speaker
-        if cand.category != "other":
+        if cand.category in CLINICIAN_CATEGORIES:
+            # Exam findings, assessments, plans and advice must be what the clinician actually said.
+            if "clinician" not in speakers or quote_speaker != "clinician":
+                needs_review = True
+                msg = ("Speaker mismatch: a clinician statement (exam/assessment/plan/advice) must be quoted from a "
+                       "clinician turn.")
+                notes.append(msg)
+                findings.append(ValidationFinding(code="speaker_mismatch", severity="warning", message=msg,
+                                                  ref_type="fact", ref_id=cand.fact_id))
+        elif cand.category != "other":
             if not speakers & PATIENT_SIDE:
                 needs_review = True
                 if speakers == {"clinician"}:
@@ -245,12 +254,32 @@ def validate_symptoms(candidates: list[SymptomCandidate], segments: list[Transcr
         if refs[0].speaker not in PATIENT_SIDE:
             status = "needs_review"
             notes.append("Symptom mention not located in a patient turn.")
+        # Follow-up: did a clinician ask about or respond to this symptom?
+        followed_up: bool | None = None
+        follow_refs: list[EvidenceReference] = []
+        if cand.polarity == "positive":
+            for q in cand.follow_up_quotes or []:
+                found, _ = _locate_in_any(q, cand.follow_up_segment_ids, seg_index)
+                if found and found[0].speaker == "clinician":
+                    follow_refs.append(found[0])
+            if follow_refs:
+                followed_up = True
+            elif not cand.follow_up_quotes and not cand.follow_up_segment_ids:
+                followed_up = False
+            else:
+                notes.append("Follow-up evidence could not be validated.")
+            if followed_up is False:
+                findings.append(ValidationFinding(
+                    code="unexplored_symptom", severity="warning", ref_type="symptom", ref_id=sid,
+                    message=f"Patient mentioned '{cand.concept}', but no clinician question or response about it "
+                            "was found in the transcript — review."))
         mentions.append(SymptomMention(
             symptom_id=sid, concept=cand.concept.strip() or "(unnamed)", polarity=cand.polarity,
             fact_ids=fact_ids,
             source_segment_ids=[s for s in dict.fromkeys(cand.source_segment_ids) if s in seg_index],
             supporting_quote=cand.supporting_quote.strip(), template_id=template_id,
-            evidence_status=status, evidence=refs, review_notes=notes))  # type: ignore[arg-type]
+            evidence_status=status, evidence=refs, followed_up=followed_up, follow_up_evidence=follow_refs,
+            review_notes=notes))  # type: ignore[arg-type]
     return mentions, findings
 
 

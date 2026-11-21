@@ -1,124 +1,150 @@
-"""Patient-friendly explanation: validation of rewritten statements + a deterministic demo renderer.
+"""Patient after-visit summary: validation of rewritten statements, a deterministic demo renderer, and a
+copyable plain-text version.
 
-Every statement must cite known, accepted fact IDs. A deterministic "meaning check" flags rewritten
-sentences that may have lost a negation, an uncertainty, or a number from their source facts
-(inspired by the PLABA plain-language adaptation task: simplified sentences should point back to
-their source and flag where meaning might have changed).
+Every sentence must cite known, accepted fact IDs (what the patient said, and what the clinician said).
+Meaning checks flag sentences that may have lost a negation, an uncertainty or a number.
 """
 
 from __future__ import annotations
 
-import re
-
 from app.llm.schemas import PatientExplanationOutput, PatientStatementCandidate
-from app.schemas.facts import MedicalFact
-from app.schemas.outputs import GeneratedStatement, MeaningCheck, ValidationFinding
+from app.schemas.facts import CLINICIAN_CATEGORIES, MedicalFact
+from app.schemas.outputs import GeneratedStatement, ValidationFinding
+from app.services.meaning import fact_meaning_checks
+from app.services.plain_language import simplify_text
 
-NEGATION_RE = re.compile(
-    r"\b(no|not|never|none|nothing|without|denied|denies|neither|nor)\b|n't\b|n’t\b", re.IGNORECASE)
-UNCERTAINTY_RE = re.compile(
-    r"\b(not sure|unsure|unclear|uncertain|unknown|not known|not clear|not certain|maybe|might|possibly|"
-    r"perhaps|(do|does|did)\s*n['’]?t (remember|know)|(can|could)\s*n['’]?t (remember|recall)|"
-    r"not (remember|recall)|forgot|forget|not established|don['’]t know)\b",
-    re.IGNORECASE)
-NUMBER_WORDS = {
-    "one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6, "seven": 7, "eight": 8, "nine": 9,
-    "ten": 10, "eleven": 11, "twelve": 12, "fifteen": 15, "twenty": 20, "thirty": 30, "once": 1, "twice": 2,
-    "a week": 1, "a day": 1,
+SECTION_ORDER = ["your_concern", "what_you_told", "findings", "assessment", "plan", "follow_up"]
+SECTION_HEADINGS = {
+    "en": {
+        "your_concern": "Why you came", "what_you_told": "What you told the doctor",
+        "findings": "What the doctor found", "assessment": "What the doctor thinks",
+        "plan": "Treatment, prescriptions and advice", "follow_up": "Follow-up and when to get help",
+        "not_established": "Not discussed in this conversation",
+    },
+    "sv": {
+        "your_concern": "Varför du sökte vård", "what_you_told": "Det du berättade för läkaren",
+        "findings": "Vad läkaren såg vid undersökningen", "assessment": "Läkarens bedömning",
+        "plan": "Behandling, recept och råd", "follow_up": "Uppföljning och när du ska söka vård",
+        "not_established": "Togs inte upp i samtalet",
+    },
 }
-_NUM_RE = re.compile(r"\b(\d+(?:\.\d+)?|" + "|".join(k for k in NUMBER_WORDS if " " not in k) + r")\b", re.IGNORECASE)
-
-# Small plain-language glossary used by the demo renderer.
-PLAIN_TERMS = {
-    "dyspnea": "shortness of breath", "dyspnoea": "shortness of breath", "cephalalgia": "headache",
-    "photophobia": "sensitivity to light", "phonophobia": "sensitivity to sound", "emesis": "vomiting",
-    "pyrexia": "fever", "febrile": "having a fever", "vertigo": "a spinning feeling (vertigo)",
-    "paresthesia": "pins and needles", "tinnitus": "ringing in the ears", "analgesic": "painkiller",
-    "nsaid": "anti-inflammatory painkiller", "hypertension": "high blood pressure",
+DISCLAIMERS = {
+    "en": "This summary is for information only. It describes what was said in the conversation. "
+          "It is not a diagnosis and not a substitute for medical advice. If anything is unclear, ask your clinic.",
+    "sv": "Den här sammanfattningen är endast information. Den beskriver vad som sades under samtalet. "
+          "Den är ingen diagnos och ersätter inte medicinsk rådgivning. Kontakta din mottagning om något är oklart.",
+}
+INTROS = {
+    "en": "Here is a plain-language summary of your consultation.",
+    "sv": "Här är en sammanfattning av ditt besök på enkel svenska.",
 }
 
+# Swedish names for checklist dimensions (used in the "not discussed" list of Swedish summaries).
+DIMENSION_LABELS_SV = {
+    "onset": "När besvären började", "duration_course": "Hur länge det pågått / förlopp", "location": "Var det sitter",
+    "character": "Hur det känns", "severity_impact": "Hur svårt det är / hur det påverkar dig",
+    "timing_frequency": "Hur ofta det händer", "modifying_factors": "Vad som gör det bättre eller sämre",
+    "associated_symptoms": "Andra symtom", "previous_episodes": "Tidigare liknande besvär",
+    "treatment_tried": "Behandling du redan provat", "injury_mechanism": "Skada eller vad som utlöste det",
+    "radiation": "Om smärtan strålar ut", "intake_hydration": "Mat och dryck",
+    "exposure_contacts": "Resor, mat eller sjuka i din omgivning", "sleep_pattern": "Sömn",
+}
 
-def numbers_in(text: str) -> set[float]:
-    found: set[float] = set()
-    for m in _NUM_RE.finditer(text or ""):
-        tok = m.group(1).lower()
-        found.add(float(NUMBER_WORDS[tok]) if tok in NUMBER_WORDS else float(tok))
-    return found
+CATEGORY_SECTION = {"examination": "findings", "assessment": "assessment", "plan": "plan", "prescription": "plan",
+                    "advice": "plan", "follow_up": "follow_up"}
 
 
-def meaning_checks(text: str, facts: list[MedicalFact]) -> list[MeaningCheck]:
-    checks: list[MeaningCheck] = []
-    has_neg = bool(NEGATION_RE.search(text))
-    has_unc = bool(UNCERTAINTY_RE.search(text))
-    if any(f.polarity == "negative" for f in facts) and not has_neg:
-        checks.append(MeaningCheck(check="negation",
-                                   message="Source fact is negative, but the sentence has no negation."))
-    if facts and all(f.polarity == "positive" for f in facts) and has_neg and not has_unc:
-        checks.append(MeaningCheck(check="negation",
-                                   message="Sentence contains a negation, but the source facts are positive."))
-    if any(f.polarity == "uncertain" for f in facts) and not has_unc:
-        checks.append(MeaningCheck(check="uncertainty",
-                                   message="Source fact is uncertain, but the sentence does not say so."))
-    source_numbers: set[float] = set()
+def infer_section(facts: list[MedicalFact]) -> str:
     for f in facts:
-        for field in (f.duration, f.frequency, f.severity):
-            source_numbers |= numbers_in(field or "")
-    missing = source_numbers - numbers_in(text)
-    if missing:
-        checks.append(MeaningCheck(check="number",
-                                   message="A number from the source fact is missing or changed: "
-                                           + ", ".join(f"{n:g}" for n in sorted(missing))))
-    return checks
+        if f.category in CATEGORY_SECTION:
+            return CATEGORY_SECTION[f.category]
+    return "what_you_told"
 
 
-def validate_patient_statements(output: PatientExplanationOutput, accepted_facts: list[MedicalFact]
-                                ) -> tuple[list[GeneratedStatement], list[ValidationFinding]]:
+def validate_patient_statements(output: PatientExplanationOutput, accepted_facts: list[MedicalFact],
+                                language: str = "en") -> tuple[list[GeneratedStatement], list[ValidationFinding]]:
     by_id = {f.fact_id: f for f in accepted_facts}
     statements: list[GeneratedStatement] = []
     findings: list[ValidationFinding] = []
-    for n, cand in enumerate(output.statements, start=1):
-        sid = f"P{n:03d}"
+    for cand in output.statements:
+        sid = f"P{len(statements) + 1:03d}"
         text = (cand.text or "").strip()
         if not text:
             continue
         ids = list(dict.fromkeys(cand.fact_ids))
         unknown = [f for f in ids if f not in by_id]
         if not ids or unknown:
-            msg = ("Statement removed: it cites no fact IDs." if not ids else
-                   f"Statement removed: it cites unknown or non-accepted fact ID(s) {', '.join(unknown)}.")
+            msg = ("A sentence was removed because it cited no facts." if not ids else
+                   f"A sentence was removed because it cited unknown or unaccepted fact ID(s) {', '.join(unknown)}.")
             findings.append(ValidationFinding(code="statement_unknown_fact", severity="error", message=msg,
-                                              ref_type="statement", ref_id=sid))
+                                              ref_type="statement", ref_id=None))
             continue
-        checks = meaning_checks(text, [by_id[f] for f in ids])
+        facts = [by_id[f] for f in ids]
+        section = cand.section
+        inferred = infer_section(facts)
+        # Clinician facts must sit in a clinician section and vice versa.
+        clinician = any(f.category in CLINICIAN_CATEGORIES for f in facts)
+        if clinician != (section in {"findings", "assessment", "plan", "follow_up"}):
+            section = inferred
+        checks = fact_meaning_checks(text, facts, language)
         if checks:
             findings.append(ValidationFinding(code="possible_meaning_change", severity="warning",
                                               ref_type="statement", ref_id=sid,
-                                              message="; ".join(c.message for c in checks)))
+                                              message=f"“{text[:90]}” — " + "; ".join(c.message for c in checks)))
         statements.append(GeneratedStatement(
-            statement_id=sid, section="patient_explanation", text=text, fact_ids=ids,
-            needs_review=bool(checks), meaning_checks=checks,
-            review_notes=["Possible meaning change — please review."] if checks else []))
+            statement_id=sid, section=section, text=text, fact_ids=ids, needs_review=bool(checks),
+            meaning_checks=checks, review_notes=["Possible meaning change — compare with the source."] if checks else []))
     return statements, findings
 
 
-def _plain(text: str) -> str:
-    out = text
-    for term, plain in PLAIN_TERMS.items():
-        out = re.sub(rf"\b{re.escape(term)}\b", plain, out, flags=re.IGNORECASE)
-    return out
+def build_plain_text(statements: list[GeneratedStatement], not_established: list[str], language: str,
+                     patient_name: str | None, date_text: str) -> str:
+    h = SECTION_HEADINGS["sv" if language == "sv" else "en"]
+    title = "Sammanfattning av besöket" if language == "sv" else "After-visit summary"
+    lines = [f"{title}{' — ' + patient_name if patient_name else ''} — {date_text}", ""]
+    for section in SECTION_ORDER:
+        items = [s.text for s in statements if s.section == section]
+        if items:
+            lines.append(h[section])
+            lines += [f"• {t}" for t in items]
+            lines.append("")
+    if not_established:
+        lines.append(h["not_established"])
+        lines += [f"• {t}" for t in not_established]
+        lines.append("")
+    lines.append(DISCLAIMERS["sv" if language == "sv" else "en"])
+    return "\n".join(lines).strip() + "\n"
 
+
+# --------------------------------------------------------------------------- demo renderer (no LLM)
 
 def _lower_first(text: str) -> str:
     text = text.strip().rstrip(".")
     return text[:1].lower() + text[1:] if text else text
 
 
+def _plain(text: str) -> str:
+    return simplify_text(text)[0]
+
+
 def template_patient_explanation(facts: list[MedicalFact]) -> PatientExplanationOutput:
-    """Deterministic plain-language rendering used by the demo provider (no LLM)."""
+    """Deterministic rendering used by the demo provider (English only)."""
     statements: list[PatientStatementCandidate] = []
+    chief = next((f for f in facts if f.category == "symptom" and f.polarity == "positive"), None)
+    if chief:
+        statements.append(PatientStatementCandidate(text=f"You came because of {_plain(chief.concept).lower()}.",
+                                                    fact_ids=[chief.fact_id], section="your_concern"))
+    clinician_intro = {"examination": "During the examination, your doctor said", "assessment": "Your doctor's view",
+                       "plan": "Your doctor's plan", "prescription": "About medicine, your doctor said",
+                       "advice": "Your doctor advised", "follow_up": "About follow-up, your doctor said"}
     for f in facts:
         concept = _plain(f.concept)
-        if f.polarity == "negative" and f.category == "medication":
+        section = "what_you_told"
+        if f.category in CLINICIAN_CATEGORIES:
+            section = CATEGORY_SECTION[f.category]
+            sentence = _plain(f.normalized_value).strip().rstrip(".")
+            text = f"{clinician_intro[f.category]}: {sentence}."
+        elif f.polarity == "negative" and f.category == "medication":
             text = "You said you have not taken medication."
         elif f.polarity == "negative":
             text = f"You said you have not had {concept.lower()}."
@@ -126,16 +152,17 @@ def template_patient_explanation(facts: list[MedicalFact]) -> PatientExplanation
             text = f"It was not clear from the conversation: {_lower_first(_plain(f.normalized_value))}."
         elif f.category == "symptom":
             details = [d for d in (f.duration, f.location, f.frequency, f.severity) if d]
-            text = f"You told the clinician about your {concept.lower()}."
+            text = f"You told the doctor about your {concept.lower()}."
             if details:
-                text += " Details you mentioned: " + "; ".join(f"\u201c{d}\u201d" for d in details) + "."
+                text += " Details you mentioned: " + "; ".join(f"“{d}”" for d in details) + "."
         elif f.category == "impact" and f.severity:
-            text = f"You described how bad it was as \u201c{f.severity}\u201d."
+            text = f"You described how bad it was as “{f.severity}”."
         elif f.category == "medication":
             text = f"You mentioned taking {concept.lower()}."
         elif f.category in {"history", "allergy", "social"}:
             text = f"You mentioned: {_lower_first(_plain(f.normalized_value))}."
         else:
             text = f"It was noted that {_lower_first(_plain(f.normalized_value))}."
-        statements.append(PatientStatementCandidate(text=text, fact_ids=[f.fact_id]))
+        statements.append(PatientStatementCandidate(text=text, fact_ids=[f.fact_id], section=section))  # type: ignore[arg-type]
     return PatientExplanationOutput(statements=statements)
+

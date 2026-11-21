@@ -28,27 +28,48 @@ I = re.IGNORECASE
 NUM = r"(?:\d+|a|an|one|two|three|four|five|six|seven|eight|nine|ten|a few|a couple of|several)"
 
 SYMPTOMS: list[tuple[str, re.Pattern[str]]] = [
-    ("headache", re.compile(r"\b(headaches?|migraines?|head (?:hurts|pain|ache)|head (?:has been |is )?(?:pounding|hurting|aching|throbbing))\b", I)),
+    ("headache", re.compile(r"\b(headaches?|migraines?|head (?:hurts|pain|ache)|head (?:has been |is )?"
+                            r"(?:pounding|hurting|aching|throbbing))\b", I)),
+    ("abdominal pain", re.compile(r"\b(stomach (?:pain|ache|hurts|cramps?)|stomachache|tummy (?:pain|ache)|"
+                                  r"abdominal pain|belly (?:pain|ache)|pain in my (?:stomach|tummy|belly|abdomen)|"
+                                  r"my (?:stomach|tummy|belly) (?:hurts|is sore))\b", I)),
+    ("vomiting", re.compile(r"\b(vomit\w*|throwing up|threw up|been sick)\b", I)),
+    ("nausea", re.compile(r"\b(nausea|nauseous|nauseated|sick to my stomach|fe(?:lt|el|eling) sick)\b", I)),
+    ("diarrhoea", re.compile(r"\b(diarrh\w+|loose stools?|runny stools?|watery stools?)\b", I)),
+    ("constipation", re.compile(r"\b(constipat\w+|haven'?t (?:had a|been able to have a) bowel movement)\b", I)),
     ("fever", re.compile(r"\b(fevers?|feverish|(?:a |slight |high )temperature)\b", I)),
-    ("dizziness", re.compile(r"\b(dizzy|dizziness|light-?headed)\b", I)),
-    ("nausea", re.compile(r"\b(nausea|nauseous|nauseated|sick to my stomach|fe(?:lt|el) sick)\b", I)),
-    ("vomiting", re.compile(r"\b(vomit\w*|throwing up|threw up)\b", I)),
+    ("dizziness", re.compile(r"\b(dizzy|dizziness|light-?headed|vertigo|room (?:is )?spinning)\b", I)),
     ("visual changes", re.compile(r"\b(blurr?(?:y|ed) vision|vision changes|visual changes|double vision|"
                                   r"spots in (?:my|your) vision|wavy lines)\b", I)),
+    ("eye symptoms", re.compile(r"\b((?:red|itchy|sore|watery|painful) eyes?|eyes? (?:is |are |feels? )?(?:red|itchy|sore|"
+                                r"watery|painful|irritated)|eye pain|discharge from my eye)\b", I)),
     ("light sensitivity", re.compile(r"\b(sensitiv\w* to (?:the )?light|bright lights?|photophobia)\b", I)),
     ("ringing in the ears", re.compile(r"\b(ringing in (?:my|your|the) ears?|tinnitus)\b", I)),
+    ("ear pain", re.compile(r"\b(ear ?aches?|ear pain|pain in my ear|my ear (?:hurts|is sore))\b", I)),
     ("numbness or tingling", re.compile(r"\b(numb\w*|tingl\w*|pins and needles)\b", I)),
     ("neck stiffness", re.compile(r"\b(stiff neck|neck stiffness)\b", I)),
+    ("chest pain", re.compile(r"\b(chest (?:pain|tightness|discomfort|hurts|pressure)|pain in my chest)\b", I)),
     ("back pain", re.compile(r"\b(back pain|(?:lower|low|my) back)\b", I)),
     ("knee pain", re.compile(r"\b(knee pain|my knee|(?:right|left) knee)\b", I)),
     ("shoulder pain", re.compile(r"\b(shoulder pain|my shoulder)\b", I)),
+    ("hip pain", re.compile(r"\b(hip pain|my hip)\b", I)),
     ("neck pain", re.compile(r"\bneck pain\b", I)),
+    ("ankle pain", re.compile(r"\b(ankle pain|my ankle|(?:right|left) ankle)\b", I)),
+    ("wrist pain", re.compile(r"\b(wrist pain|my wrist|(?:right|left) wrist)\b", I)),
     ("cough", re.compile(r"\b(cough\w*)\b", I)),
-    ("shortness of breath", re.compile(r"\b(short(?:ness)? of breath|breathless\w*|trouble breathing)\b", I)),
-    ("chest pain", re.compile(r"\bchest pain\b", I)),
-    ("fatigue", re.compile(r"\b(fatigue\w*|exhausted)\b", I)),
-    ("sore throat", re.compile(r"\bsore throat\b", I)),
-    ("rash", re.compile(r"\brash\b", I)),
+    ("shortness of breath", re.compile(r"\b(short(?:ness)? of breath|breathless\w*|trouble breathing|hard to breathe)\b", I)),
+    ("sore throat", re.compile(r"\b(sore throat|throat (?:hurts|is sore|pain))\b", I)),
+    ("fatigue", re.compile(r"\b(fatigue\w*|exhausted|tired all the time|always tired|so tired|very tired)\b", I)),
+    ("rash", re.compile(r"\b(rash\w*|hives|itchy (?:skin|spots|patches)|red spots)\b", I)),
+    ("urinary symptoms", re.compile(r"\b(burning when i (?:pee|urinate)|(?:it )?burns when i (?:pee|urinate)|"
+                                    r"pain(?:ful)? (?:when )?(?:i )?(?:pee|urinat\w*)|peeing (?:a lot|more)|"
+                                    r"urinat\w+ (?:a lot|more often|frequently)|bladder infection|\buti\b)\b", I)),
+    ("palpitations", re.compile(r"\b(palpitations?|heart (?:is )?(?:racing|pounding|fluttering)|racing heart|"
+                                r"skipped beats?|skipping beats?|irregular heartbeat)\b", I)),
+    ("anxiety", re.compile(r"\b(anxi\w+|panic attacks?|on edge|very worried all the time)\b", I)),
+    ("low mood", re.compile(r"\b(low mood|feeling (?:low|down|depressed)|depress\w+)\b", I)),
+    ("trouble sleeping", re.compile(r"\b(insomnia|can'?t sleep|trouble sleeping|difficulty sleeping|not sleeping|"
+                                    r"hard to (?:fall|stay) asleep|waking up (?:at night|early))\b", I)),
 ]
 
 QUESTION_RE = re.compile(
@@ -65,11 +86,18 @@ NO_RE = re.compile(r"^\W*(?:no|nope|not really|never|nah|i have\s*n['’]?t|i ha
 DURATION_RE = re.compile(rf"\b((?:for |about |almost |nearly |over |the past |the last )?{NUM}\s+(?:days?|weeks?|months?|years?|hours?)"
                          r"(?: ago| now)?|since (?:yesterday|last \w+|this morning|monday|tuesday|wednesday|thursday|friday|"
                          r"saturday|sunday)|yesterday|this morning|last night)\b", I)
-LOCATION_RE = re.compile(r"\b(on (?:my|the) (?:right|left) side|(?:right|left)[- ]sided|behind my (?:right |left )?eyes?|"
+LOCATION_RE = re.compile(r"\b(on (?:my|the) (?:right|left|other) side|(?:right|left)[- ]sided|behind my (?:right |left )?eyes?|"
                          r"(?:the )?back of my head|(?:the )?front of my head|forehead|temples?|lower back|low back|"
-                         r"(?:right|left) (?:knee|shoulder|hip|ankle|side))\b", I)
+                         r"middle of my (?:back|chest|stomach)|just above my hips|"
+                         r"(?:right|left|lower|upper) (?:knee|shoulder|hip|ankle|wrist|side|eye|ear|leg|arm|abdomen|belly|tummy)|"
+                         r"(?:around|below|above) (?:my |the )?(?:belly button|navel|kneecap|ribs)|"
+                         r"both (?:sides|eyes|ears|legs|arms)|(?:on|in) my (?:arms?|legs?|face|back|chest|neck|hands?|feet)|"
+                         r"centre of my chest|center of my chest|"
+                         r"(?:front|back|inside|outside) of my (?:knee|ankle|wrist|leg|arm))\b", I)
 DESCRIPTION_RE = re.compile(r"\b(dull|sharp|throbbing|pulsing|pounding|stabbing|aching|burning|pressure|tight\w*|squeezing|"
-                            r"shooting)\b", I)
+                            r"shooting|cramp\w*|crampy|dry|wet|chesty|productive|phlegm|mucus|itchy|bumpy|raised|"
+                            r"spinning|light-?headed|unsteady|racing|fluttering|watery|loose|hard|red|blotchy|"
+                            r"crushing|heavy|sore)\b", I)
 FREQUENCY_RE = re.compile(r"\b(every day|daily|every (?:morning|night|evening)|(?:once|twice|\w+ times) a (?:day|week|month)|"
                           r"comes and goes|constant(?:ly)?|all the time|on and off|sometimes|occasionally|"
                           r"more frequent(?:ly)?)\b", I)
@@ -86,53 +114,76 @@ HISTORY_RE = re.compile(r"\b((?:had|have had|gotten|get) (?:this|these|it|them|o
                         r" before|ever since|for years|history of)\b", I)
 ALLERGY_RE = re.compile(r"\ballergic to ([a-z][a-z ]{1,30})", I)
 NO_ALLERGY_RE = re.compile(r"\bno (?:known )?allergies\b", I)
-FIRST_PERSON_RE = re.compile(r"\b(i|i'm|i've|i'd|my|me)\b", I)
+FIRST_PERSON_RE = re.compile(r"\b(i'm|i've|i have|i feel|i get|my)\b", I)
 ACK_RE = re.compile(r"^\W*(?:(?:yeah|yes|okay|ok|alright|sure|great)\W*)*(?:that sounds|sounds (?:good|great)|thanks?\b|"
                     r"thank you|okay\W*$|ok\W*$|alright\W*$|sure\W*$|bye)", I)
 # Long clinician turns are usually examination findings or plans, not questions.
 MAX_QUESTION_TURN_CHARS = 400
 
-_BASE = {
-    "triggers": r"worse when|worse with|better when|better with|\bhelps?\b|helped|reliev\w*|trigger\w*|"
-                r"when i(?:'m)? (?:exercis|stress|jog|run|bend|stand|sit|lie|lay)|stress\w*|exercis\w*",
+_TRIGGERS = (r"worse when|worse with|worse if|better when|better with|\bhelps?\b|helped|reliev\w*|trigger\w*|"
+             r"makes? it (?:worse|better)|when i(?:'m)? (?:exercis|stress|jog|run|bend|stand|sit|lie|lay|eat|walk|climb)|"
+             r"stress\w*|exercis\w*|after (?:eating|meals?|food)|caffeine|coffee|hurts (?:more|less) when")
+
+# Question regex and information regex per documentation dimension (see symptom_templates.json).
+DIM_CUES: dict[str, tuple[str, re.Pattern[str] | str]] = {
+    "onset": (r"when did|\bstart|\bbegin|\bbegan|how long have|first notice|how long ago",
+              re.compile(r"\bstarted\b|\bbegan\b|\bago\b|\bsince\b|yesterday|this morning|last (?:week|night|month)", I)),
+    "duration_course": (r"how long|constant|come and go|comes and goes|changed|getting (?:worse|better)|last for",
+                        re.compile(DURATION_RE.pattern + r"|comes and goes|constant|getting (?:worse|better)|"
+                                   r"more frequent|several hours|few minutes", I)),
+    "location": (r"\bwhere\b|which side|what part|point to|which (?:eye|ear|knee|leg|arm)", LOCATION_RE),
+    "character": (r"describe|feel like|how do(?:es)? (?:it|they) feel|what kind of|what type of|what does it look|"
+                  r"what is it like|dry or|look like", DESCRIPTION_RE),
+    "severity_impact": (r"how (?:bad|severe|strong|high)|scale|out of (?:10|ten)|\brate\b|affect|interfer|prevent|"
+                        r"stop you|daily (?:life|activities)|temperature",
+                        re.compile(SEVERITY_RE.pattern + r"|ca\s*n['’]?t (?:work|sleep|walk|eat|concentrate)|"
+                                   r"miss(?:ed)? work|prevented|difficult to|\d+(?:\.\d+)? degrees", I)),
+    "timing_frequency": (r"how often|how many times|how frequent|every day|time of (?:the )?day|worse in the|pattern|"
+                         r"at night",
+                         re.compile(FREQUENCY_RE.pattern + r"|in the (?:morning|evening)|at night|times a day", I)),
+    "modifying_factors": (r"better or worse|worse or better|makes? (?:it|them|the pain) (?:better|worse)|"
+                          r"(?:anything|that|it) help|trigger|reliev|when you(?:'re)? (?:laying|lying|sitting|standing)|"
+                          r"brings? (?:it|them) on", re.compile(_TRIGGERS, I)),
+    "associated_symptoms": (r"anything else|other symptoms|any other|along with|noticed any", "OTHER_SYMPTOMS"),
+    "previous_episodes": (r"before|in the past|ever had|happened previously",
+                          re.compile(HISTORY_RE.pattern + r"|once about|last time|never had|first time", I)),
+    "treatment_tried": (r"\btried\b|\btaken\b|take anything|medication|\bice\b|icing|\bheat\b|done anything",
+                        re.compile(MED_RE.pattern + r"|\bice\b|icing|heat|hot shower|physical therapy|stretch\w*|"
+                                   r"rest(?:ed|ing)?\b|cream|drops|antacids?", I)),
+    "injury_mechanism": (r"injur|accident|\bfall\b|\bfell\b|what happened|how did (?:it|this) happen|what were you doing",
+                         re.compile(r"\bfell\b|lifting|twisted|injur\w*|accident\w*|raking|playing|no,? i haven", I)),
+    "radiation": (r"spread|move anywhere|radiat|go(?:es)? anywhere|travel to",
+                  re.compile(r"spread\w*|radiat\w*|goes (?:up|down|into|to|through)|into my (?:arm|back|shoulder|jaw|neck)|"
+                             r"stays? in one place|doesn'?t (?:spread|move)", I)),
+    "intake_hydration": (r"\beat\b|\beating\b|drink|fluids|keep (?:anything|food|water|fluids) down|appetite|diet",
+                         re.compile(r"\beat\w*|drink\w*|appetite|keep (?:\w+ ){0,2}down|water|fluids|hungry|food|fibre|fiber", I)),
+    "exposure_contacts": (r"travel|abroad|anyone else|around anyone|sick contacts|eaten anything|restaurant|"
+                          r"anyone (?:at home|in your family)|smoke",
+                          re.compile(r"\bate\b|restaurant|travel\w*|abroad|my (?:kids?|family|partner|husband|wife|colleagues?)|"
+                                     r"nobody (?:else|around)|no one else|smok\w*|everyone (?:else )?(?:is )?fine", I)),
+    "sleep_pattern": (r"sleep", re.compile(r"sleep\w*|awake|insomnia|wake up|waking", I)),
 }
 
-ITEM_CUES: dict[str, dict[str, tuple[str, re.Pattern[str] | str]]] = {
-    "headache_demo_v1": {
-        "onset": (r"when did|\bstart|\bbegin|\bbegan|first notice|all of a sudden|sudden|gradual",
-                  re.compile(r"\bstarted\b|\bbegan\b|\bago\b|\bsince\b|yesterday|this morning|last night|suddenly|"
-                             r"gradual|all of a sudden", I)),
-        "duration_course": (r"how long|constant|come and go|comes and goes|changed|getting (?:worse|better)",
-                            re.compile(DURATION_RE.pattern + r"|comes and goes|constant|getting (?:worse|better)|"
-                                       r"more frequent", I)),
-        "location": (r"\bwhere\b|which side|what part", LOCATION_RE),
-        "description": (r"describe|feel like|how do(?:es)? (?:it|they) feel|what kind of|what type of", DESCRIPTION_RE),
-        "severity_impact": (r"how (?:bad|severe|strong)|scale|out of (?:10|ten)|\brate\b|affect|interfer|prevent|stop you",
-                            re.compile(SEVERITY_RE.pattern + r"|ca\s*n['’]?t (?:work|sleep|exercise)|miss(?:ed)? work|"
-                                       r"prevented", I)),
-        "frequency_pattern": (r"how often|how many times|how frequent|every day|time of (?:the )?day|worse in the|pattern",
-                              re.compile(FREQUENCY_RE.pattern + r"|in the (?:morning|evening)|at night", I)),
-        "triggers_relief": (r"better or worse|worse or better|makes? (?:it|them|the pain) (?:better|worse)|trigger|(?:anything|that|it) help|reliev|activit",
-                            re.compile(_BASE["triggers"], I)),
-        "other_symptoms": (r"anything else|other symptoms|any other|along with", "OTHER_SYMPTOMS"),
-    },
-    "msk_pain_demo_v1": {
-        "onset": (r"when did|\bstart|\bbegin|\bbegan|how long have|first notice",
-                  re.compile(r"\bstarted\b|\bbegan\b|\bago\b|\bsince\b|yesterday|this morning|last (?:week|night|month)", I)),
-        "injury_mechanism": (r"injur|accident|\bfall\b|\bfell\b|what happened|how did (?:it|this) happen|what were you doing",
-                             re.compile(r"\bfell\b|lifting|twisted|injur\w*|accident\w*|raking|playing|no,? i haven", I)),
-        "location": (r"\bwhere\b|which side|what part|point to", LOCATION_RE),
-        "description": (r"describe|feel like|what kind of|what type of", DESCRIPTION_RE),
-        "severity_impact": (r"how (?:bad|severe|strong)|scale|out of (?:10|ten)|\brate\b|affect|interfer|prevent|stop you",
-                            re.compile(SEVERITY_RE.pattern + r"|ca\s*n['’]?t (?:work|sleep|walk)|miss(?:ed)? work", I)),
-        "aggravating_relieving": (r"better or worse|worse or better|makes? (?:it|them|the pain) (?:better|worse)|"
-                                  r"(?:anything|that|it) help|when you(?:'re)? (?:laying|lying|sitting|standing)", re.compile(_BASE["triggers"] + r"|hurts (?:more|less) when", I)),
-        "previous_episodes": (r"before|in the past|ever had", re.compile(HISTORY_RE.pattern + r"|once about|last time", I)),
-        "treatment_tried": (r"\btried\b|\btaken\b|take anything|medication|\bice\b|icing|\bheat\b", re.compile(MED_RE.pattern + r"|\bice\b|"
-                            r"icing|heat|hot shower|physical therapy|stretch\w*", I)),
-        "other_symptoms": (r"anything else|other symptoms|any other|numbness|tingling", "OTHER_SYMPTOMS"),
-    },
-}
+CLINICIAN_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
+    ("follow_up", re.compile(r"\b(follow[- ]up|come back|see you (?:again|in)|contact us|seek (?:medical|emergency)|"
+                             r"call us|return if|book (?:a|an) (?:appointment|visit)|check in again)\b", I)),
+    ("prescription", re.compile(r"\b(prescri\w+|i'?ll (?:give|start) you|start you on|\d+ ?(?:mg|milligrams?)\b|"
+                                r"(?:once|twice|three times) (?:a|per) day|as needed)\b", I)),
+    ("examination", re.compile(r"\b(examination|on exam\w*|i can see|there(?:'s| is) (?:some |mild |no )?(?:tenderness|"
+                               r"swelling|redness|warmth)|your (?:leg strength|reflexes|blood pressure|heart|lungs|"
+                               r"temperature|throat|ears?|eyes?) (?:is|are|sounds?|looks?)|exam shows|i (?:don't )?"
+                               r"(?:find|feel|hear|see) (?:any|no|some))\b", I)),
+    ("assessment", re.compile(r"\b(it may be|it might be|could be|likely|i think (?:this|it|you)|consistent with|"
+                              r"concerning for|probably|suggests?|related to|looks like (?:a|an)|sounds like (?:a|an))\b", I)),
+    ("plan", re.compile(r"\b(i'?m going to (?:order|send|refer|arrange|request)|we(?:'ll| will) (?:order|arrange|refer|"
+                        r"check|do|start)|refer you|referral|order (?:an? )?(?:x-ray|mri|blood tests?|scan|test)|"
+                        r"physiotherapy|blood tests?)\b", I)),
+    ("advice", re.compile(r"\b(i recommend|i suggest|try to|avoid|you (?:can|should|could) (?:use|take|try|avoid|stay|keep|"
+                          r"rest|drink)|make sure (?:you|to)|keep (?:active|hydrated)|stay (?:active|hydrated)|"
+                          r"drink plenty)\b", I)),
+]
+
+GENERAL_TEMPLATE_ID = "general_symptom_demo_v1"
 
 
 @dataclass
@@ -149,7 +200,8 @@ class _Builder:
 
 
 def _sentences(text: str) -> list[tuple[int, int]]:
-    spans = [(m.start(), m.end()) for m in re.finditer(r"[^.!?]+[.!?]*", text)]
+    # Sentence spans; a "." between digits (37.8) does not end a sentence.
+    spans = [(m.start(), m.end()) for m in re.finditer(r"(?:[^.!?]|\.(?=\d))+[.!?]*", text)]
     return spans or [(0, len(text))]
 
 
@@ -239,7 +291,27 @@ class DemoProvider:
                 nxt = segments[idx + 1] if idx + 1 < len(segments) else None
                 if nxt is not None and nxt.speaker in {"patient", "other"}:
                     self._question_answer(b, seg, nxt, positive_concepts)
+        for seg in segments:
+            if seg.speaker == "clinician":
+                self._clinician_statements(b, seg)
         return b.facts
+
+    def _clinician_statements(self, b: _Builder, seg: TranscriptSegment) -> None:
+        """Examination findings, assessment, plan, prescriptions, advice and follow-up as stated by the clinician."""
+        for start, end in _sentences(seg.text):
+            sentence = seg.text[start:end].strip()
+            if len(sentence) < 15 or sentence.endswith("?"):
+                continue
+            for category, pattern in CLINICIAN_PATTERNS:
+                if pattern.search(sentence):
+                    quote = _window(seg.text, start, min(end, start + 1), radius=160)
+                    hedged = category == "assessment"
+                    b.add((category, quote.lower()), category=category, concept=category.replace("_", " "),
+                          normalized_value=quote, polarity="uncertain" if hedged else "positive",
+                          certainty="explicit", temporality="future_or_planned" if category in
+                          {"plan", "advice", "follow_up", "prescription"} else "current",
+                          source_segment_ids=[seg.segment_id], supporting_quote=quote)
+                    break
 
     def _patient_symptoms(self, b: _Builder, seg: TranscriptSegment, positive: set[str]) -> None:
         text = seg.text
@@ -363,14 +435,12 @@ class DemoProvider:
     # ------------------------------------------------------------- checklist
     def _assess(self, template: ChecklistTemplate, segments: list[TranscriptSegment], facts: list[FactCandidate],
                 primary_concepts: set[str]) -> list[ChecklistCandidate]:
-        cues = ITEM_CUES.get(template.template_id)
-        if not cues:
-            return []
         out: list[ChecklistCandidate] = []
         for item in template.items:
-            if item.item_id not in cues:
+            cue = DIM_CUES.get(item.dimension or item.item_id)
+            if cue is None:
                 continue
-            q_pattern, info = cues[item.item_id]
+            q_pattern, info = cue
             q_re = re.compile(q_pattern, I)
 
             def info_match(text: str):
@@ -433,7 +503,9 @@ class DemoProvider:
                 # Possible speaker-label problem: first-person information inside clinician-labelled turns.
                 for seg in segments:
                     im = info_match(seg.text) if seg.speaker == "clinician" else None
-                    if im and FIRST_PERSON_RE.search(seg.text) and not QUESTION_RE.search(seg.text[:40]):
+                    clinician_talk = any(pat.search(seg.text) for _, pat in CLINICIAN_PATTERNS)
+                    if im and FIRST_PERSON_RE.search(seg.text) and not clinician_talk \
+                            and not QUESTION_RE.search(seg.text[:40]):
                         i_refs = [(seg.segment_id, _window(seg.text, im.start(), im.end()))]
                         proposed = "unclear_needs_review"
                         rationale = ("Relevant first-person information appears in a clinician-labelled turn; "
@@ -456,24 +528,67 @@ class DemoProvider:
         symptoms: list[SymptomCandidate] = []
         checklist: list[ChecklistCandidate] = []
         used_templates: set[str] = set()
+        by_id = {t.template_id: t for t in templates}
+        patterns = dict(SYMPTOMS)
+        first_positive = True
+        first_symptom_template = True
         for f in facts:
             if f.category != "symptom":
                 continue
             template_id = None
             if f.polarity == "positive":
                 for t in templates:
-                    if any(tc in f.concept or f.concept in tc for tc in t.trigger_concepts):
+                    if any(tc == f.concept or tc in f.concept or f.concept in tc for tc in t.trigger_concepts):
                         template_id = t.template_id
                         break
+                # The main (first) symptom falls back to the general template when nothing specific matches.
+                if template_id is None and first_positive and GENERAL_TEMPLATE_ID in by_id:
+                    template_id = GENERAL_TEMPLATE_ID
+                first_positive = False
+            follow_ids, follow_quotes = self._follow_up(f, segments, patterns.get(f.concept))
+            # Additional templates only for symptoms the consultation actually explored.
+            if template_id and not first_symptom_template and not follow_ids:
+                template_id = None
             symptoms.append(SymptomCandidate(concept=f.concept, polarity=f.polarity, fact_ids=[f.fact_id],
                                              source_segment_ids=f.source_segment_ids,
-                                             supporting_quote=f.supporting_quote, template_id=template_id))
-            if template_id and template_id not in used_templates:
+                                             supporting_quote=f.supporting_quote, template_id=template_id,
+                                             follow_up_segment_ids=follow_ids, follow_up_quotes=follow_quotes))
+            if template_id:
+                first_symptom_template = False
+            if template_id and template_id not in used_templates and len(used_templates) < 2:
                 used_templates.add(template_id)
-                t = next(t for t in templates if t.template_id == template_id)
+                t = by_id[template_id]
                 primary = {f.concept} | {c for c, _ in SYMPTOMS if any(c in tc or tc in c for tc in t.trigger_concepts)}
                 checklist.extend(self._assess(t, segments, facts, primary))
         return ExtractionOutput(facts=facts, symptoms=symptoms, checklist_assessments=checklist)
+
+    @staticmethod
+    def _follow_up(fact: FactCandidate, segments: list[TranscriptSegment], pattern: re.Pattern[str] | None
+                   ) -> tuple[list[str], list[str]]:
+        """A clinician turn that mentions the same symptom (asked about it or responded to it)."""
+        if fact.polarity != "positive" or pattern is None:
+            return [], []
+        # For pain-type symptoms a clinician asking about "the pain" also counts.
+        generic = re.compile(r"\b(pain|hurts?|ache|sore)\b", I) if re.search(r"pain|ache", fact.concept) else None
+        for seg in segments:
+            if seg.speaker != "clinician":
+                continue
+            m = pattern.search(seg.text) or (generic.search(seg.text) if generic else None)
+            if m:
+                return [seg.segment_id], [_window(seg.text, m.start(), m.end())]
+        return [], []
+
+    def simplify_record(self, sentences, language: str):
+        """Deterministic glossary-based plain-language version of each record sentence (English only)."""
+        from app.llm.schemas import RecordSimplificationOutput, RecordStatementCandidate
+        from app.services.plain_language import simplify_text
+
+        out = []
+        for sent in sentences:
+            text, _ = simplify_text(sent.text)
+            text = text[:1].upper() + text[1:]
+            out.append(RecordStatementCandidate(source_sentence_ids=[sent.sentence_id], text=text))
+        return RecordSimplificationOutput(statements=out)
 
     def explain_for_patient(self, facts: list[MedicalFact], language: str) -> PatientExplanationOutput:
         return template_patient_explanation(facts)

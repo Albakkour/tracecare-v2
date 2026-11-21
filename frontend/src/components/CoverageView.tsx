@@ -1,3 +1,4 @@
+import { useState } from "react";
 import type { CoverageMetric, CoverageReport } from "../types/api";
 import { QuoteButton, StatusBadge, percent, type PanelSelection } from "./common";
 import { IconCheck, IconInfo } from "./icons";
@@ -14,7 +15,7 @@ function Metric({ metric, explanation }: { metric: CoverageMetric | null; explan
             <span className="metric-pct">{percent(metric.percentage)}</span>
           </div>
           <div className="meter" aria-hidden="true">
-            <div className="meter-fill" style={{ width: `${metric.percentage ?? 0}%` }} />
+            <div className="meter-fill" style={{ transform: `scaleX(${(metric.percentage ?? 0) / 100})` }} />
           </div>
         </>
       ) : (
@@ -34,8 +35,22 @@ export function CoverageView({
   selectedItemId: string | null;
   onSelect: (sel: PanelSelection) => void;
 }) {
+  const [active, setActive] = useState(0);
+  const withTemplate = reports.filter((r) => r.template_id);
+  const shown = withTemplate.length ? [withTemplate[Math.min(active, withTemplate.length - 1)]] : reports;
   return (
     <section>
+      {withTemplate.length > 1 && (
+        <div className="segmented" role="tablist" aria-label="Checklist">
+          {withTemplate.map((r, i) => (
+            <button key={r.template_id} type="button" role="tab" aria-selected={i === active}
+                    className={i === active ? "segmented-active" : ""} onClick={() => setActive(i)}>
+              {r.template_name?.replace(" — consultation documentation demo", "")}
+              <span className="count">{r.question_coverage?.numerator}/{r.question_coverage?.denominator}</span>
+            </button>
+          ))}
+        </div>
+      )}
       <p className="callout">
         <IconInfo size={18} />
         <span>
@@ -43,7 +58,7 @@ export function CoverageView({
           quality score. Topics not found may have been irrelevant or appropriately not discussed.
         </span>
       </p>
-      {reports.map((report, idx) => {
+      {shown.map((report, idx) => {
         if (!report.template_id) {
           return (
             <div key={idx} className="empty-state">
@@ -54,7 +69,7 @@ export function CoverageView({
         }
         const reviewed = report.items.filter((i) => i.reviewed).length;
         return (
-          <div key={report.template_id} className="coverage-report">
+          <div key={report.template_id} className="coverage-report fade-in">
             <div className="section-head">
               <div>
                 <h2>{report.template_name}</h2>

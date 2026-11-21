@@ -1,0 +1,24 @@
+Doctor: Good afternoon, Omar. What brings you in today?
+Patient: I've had stomach pain since Tuesday, and I've been throwing up.
+Doctor: I'm sorry to hear that. Where exactly is the pain?
+Patient: Mostly around my belly button, and it's crampy.
+Doctor: How many times have you vomited?
+Patient: About four times yesterday, and once this morning.
+Doctor: Are you able to keep fluids down?
+Patient: Small sips of water, yes, but I haven't been eating much.
+Doctor: Have you had any diarrhoea?
+Patient: No diarrhoea.
+Doctor: Has anyone around you been unwell, or have you eaten anything unusual?
+Patient: I ate at a new restaurant on Monday. My wife is fine.
+Doctor: Does anything make the pain better or worse?
+Patient: It's worse after I eat. Lying still helps a bit. I've also been having trouble sleeping lately.
+Doctor: Have you taken anything for it?
+Patient: I took some paracetamol, but I'm not sure how much.
+Doctor: Let me examine your abdomen. There is mild tenderness around the belly button, but your abdomen is soft. Your temperature is 37.8 degrees.
+Patient: Is it something serious?
+Doctor: It looks like a stomach infection, possibly from food. It is likely to settle in a few days.
+Patient: What should I do?
+Doctor: Try to drink small amounts of fluid often and avoid fatty food for now. I'll prescribe ondansetron 4 mg to take up to twice a day if you feel sick.
+Patient: Okay.
+Doctor: If you can't keep fluids down or the pain gets much worse, contact us the same day. Otherwise, come back in one week if you are not better.
+Patient: Thank you, doctor.

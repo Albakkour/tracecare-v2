@@ -38,6 +38,9 @@ class SymptomCandidate(BaseModel):
     source_segment_ids: list[str]
     supporting_quote: str
     template_id: str | None = Field(description="An allowed template ID, or null if none fits")
+    follow_up_segment_ids: list[str] = Field(default_factory=list,
+                                             description="Clinician turns that asked about or responded to this symptom")
+    follow_up_quotes: list[str] = Field(default_factory=list, description="Verbatim quotes from those clinician turns")
 
 
 class ChecklistCandidate(BaseModel):
@@ -59,10 +62,23 @@ class ExtractionOutput(BaseModel):
     checklist_assessments: list[ChecklistCandidate]
 
 
+PatientSection = Literal["your_concern", "what_you_told", "findings", "assessment", "plan", "follow_up"]
+
+
 class PatientStatementCandidate(BaseModel):
     text: str
     fact_ids: list[str]
+    section: PatientSection = "what_you_told"
 
 
 class PatientExplanationOutput(BaseModel):
     statements: list[PatientStatementCandidate]
+
+
+class RecordStatementCandidate(BaseModel):
+    source_sentence_ids: list[str] = Field(description="IDs of the original record sentences (e.g. R003)")
+    text: str = Field(description="Plain-language version")
+
+
+class RecordSimplificationOutput(BaseModel):
+    statements: list[RecordStatementCandidate]

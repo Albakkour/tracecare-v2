@@ -68,6 +68,8 @@ class PatientExplanation(BaseModel):
     not_established: list[str] = Field(
         default_factory=list, description="Topics that were not established in the conversation"
     )
+    section_headings: dict[str, str] = Field(default_factory=dict)
+    plain_text: str = Field(default="", description="The complete summary as plain text, ready to copy")
 
 
 class PatientInfo(BaseModel):
@@ -106,7 +108,7 @@ class PatientSummary(BaseModel):
 
 class AnalyzeRequest(BaseModel):
     transcript: str
-    language: Literal["en"] = "en"
+    language: Literal["en", "sv"] = Field(default="en", description="Language of the patient summary")
     template_ids: list[str] = Field(default_factory=list)
     provider: ProviderName | None = None
     patient: PatientInfo | None = None

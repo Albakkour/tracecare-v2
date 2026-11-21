@@ -86,7 +86,28 @@ SYNTHETIC_FILES = [
      "Synthetic: knee pain (David) — onset and previous episodes not asked",
      "Hand-written synthetic consultation. Onset and previous episodes are never discussed.", "msk_pain_demo_v1",
      "David"),
+    ("synthetic_stomach_pain_omar", "stomach_pain_omar.txt",
+     "Synthetic: stomach pain and vomiting (Omar) — full visit with plan",
+     "Hand-written synthetic consultation with examination, assessment, prescription and follow-up advice. "
+     "The patient also mentions trouble sleeping, which nobody follows up.", "abdominal_pain_demo_v1", "Omar"),
 ]
+
+SYNTHETIC_RECORD = """CHIEF COMPLAINT
+Abdominal pain and emesis.
+
+HISTORY OF PRESENT ILLNESS
+Patient is a 41-year-old male presenting with periumbilical abdominal pain since Tuesday, associated with emesis x5.
+Tolerating small amounts of PO fluids. Denies diarrhea. Reports reduced appetite.
+Possible exposure to contaminated food on Monday.
+
+PHYSICAL EXAM
+Temperature 37.8 C. Abdomen soft with mild tenderness to palpation periumbilically. No guarding.
+
+ASSESSMENT AND PLAN
+Likely acute gastroenteritis, possibly foodborne. Appendicitis considered less likely but cannot be excluded.
+Ondansetron 4 mg PO up to BID PRN nausea. Encourage oral fluids; avoid fatty foods.
+Return precautions given: seek care the same day if unable to tolerate fluids or pain worsens.
+Follow-up in 1 week if symptoms persist."""
 
 ACI_PICKS = [
     ("challenge_data/train.csv", "D2N040", "ACI-Bench D2N040: headache (role-played)",
@@ -159,6 +180,15 @@ def main() -> None:
     out = ROOT / "backend" / "app" / "samples" / "samples.json"
     out.write_text(json.dumps({"samples": samples}, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     print(f"wrote {len(samples)} samples -> {out.relative_to(ROOT)}")
+
+    data = json.loads(out.read_text(encoding="utf-8"))
+    data["records"] = [{"record_id": "synthetic_note_omar", "title": "Synthetic visit note (Omar) — abbreviations, "
+                        "negation and hedges", "source": "synthetic", "text": SYNTHETIC_RECORD}] + [
+        {"record_id": f"record_{s['sample_id']}", "title": f"{s['title'].split(':')[0]} reference note (human-written)",
+         "source": "aci-bench", "text": s["reference_note"], "citation": s.get("citation")}
+        for s in samples if s.get("reference_note")]
+    out.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    print(f"wrote {len(data['records'])} record samples")
 
     pairs = build_plaba(plaba_dir)
     out2 = ROOT / "backend" / "app" / "llm" / "plain_language_examples.json"
